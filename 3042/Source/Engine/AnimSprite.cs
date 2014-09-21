@@ -19,9 +19,11 @@ namespace _3042
         public int Columns;
         public int Width;
         public int Height;
-        public int currentFrame;
+        public float currentFrame;
+        public float totalFrames;
+        public bool AnimationFinnished = false;
 
-        private int totalFrames;
+        private int DelayTime;
 
         public AnimSprite(ContentManager getContent, string getTexture, int getWidth, int getHeight, int getRows, int getColumns)
         {
@@ -34,11 +36,14 @@ namespace _3042
             totalFrames = Rows * Columns;
         }
 
-        public void UpdateAnimation()
+        public void UpdateAnimation(float getDelay)
         {
-            currentFrame++;
-            if (currentFrame == totalFrames)
+            currentFrame += getDelay;
+            if (currentFrame >= totalFrames)
+            {
+                AnimationFinnished = true;
                 currentFrame = 0;
+            }
         }
 
         public void Draw(SpriteBatch sB, Vector2 getLocation)
@@ -47,7 +52,7 @@ namespace _3042
             int sourceHeight = Texture.Height / Rows;
 
             int row = (int)((float)currentFrame / (float)Columns);
-            int column = currentFrame % Columns;
+            int column = (int)currentFrame % Columns;
 
             Rectangle sourceRectangle = new Rectangle(sourceWidth * column, sourceHeight * row, sourceWidth, sourceHeight);
             Rectangle destinationRectangle = new Rectangle((int)getLocation.X, (int)getLocation.Y, Width, Height);

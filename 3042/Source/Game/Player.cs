@@ -15,7 +15,7 @@ namespace _3042
     class Player
     {
         //Enums
-        enum EControls
+        public enum EControls
         {
             MOUSE,
             KEYBOARD
@@ -26,15 +26,15 @@ namespace _3042
             LEFT,
             RIGHT
         };
-        enum EWeaponType
+        public enum EWeaponType
         {
             BASIC,
             ADVANCED,
             MAX
         };
         EMoveAnim _moveAnimation = EMoveAnim.STOP;
-        EControls _controls = EControls.MOUSE;
-        EWeaponType _weaponType = EWeaponType.MAX;
+        public EControls _controls = EControls.KEYBOARD;
+        public EWeaponType _weaponType = EWeaponType.MAX;
 
         //Varibles
         public AnimSprite Sprite;
@@ -72,11 +72,10 @@ namespace _3042
             //Misc
             DeltaTime = (float)getGameTime.ElapsedGameTime.TotalMilliseconds / 12;
 
-            BackBurnerEffect.UpdateAnimation();
-
             SetupAnimations();
 
             Weapon();
+            
 
             switch (_controls)
             {
@@ -90,6 +89,8 @@ namespace _3042
             Direction.Normalize();
             Position += Direction * Speed;
 
+            //Backburner effect
+            BackBurnerEffect.UpdateAnimation(0.3f);
             BackBurnerEffectPos.X = Position.X;
             BackBurnerEffectPos.Y = Position.Y + 30;
 
@@ -145,14 +146,14 @@ namespace _3042
             bulletLeft.Position = new Vector2(Position.X - 20, Position.Y - 25);
             bulletLeft.Direction = new Vector2(Position.X - 20, -100) - bulletLeft.Position;
             bulletLeft.Direction.Normalize();
-            bulletLeft.Speed = 20f;
+            bulletLeft.Speed = 15f;
             BulletList.Add(bulletLeft);
 
             Bullet bulletRight = new Bullet();
             bulletRight.Position = new Vector2(Position.X + 20, Position.Y - 25);
             bulletRight.Direction = new Vector2(Position.X + 20, -100) - bulletRight.Position;
             bulletRight.Direction.Normalize();
-            bulletRight.Speed = 20f;
+            bulletRight.Speed = 15f;
             BulletList.Add(bulletRight);
         }
         private void ShootMax()
@@ -161,14 +162,14 @@ namespace _3042
             bulletLeft.Position = new Vector2(Position.X, Position.Y - 25);
             bulletLeft.Direction = new Vector2(Position.X - 100, -100) - bulletLeft.Position;
             bulletLeft.Direction.Normalize();
-            bulletLeft.Speed = 20f;
+            bulletLeft.Speed = 18f;
             BulletList.Add(bulletLeft);
 
             Bullet bulletRight = new Bullet();
             bulletRight.Position = new Vector2(Position.X, Position.Y - 25);
             bulletRight.Direction = new Vector2(Position.X + 100, -100) - bulletRight.Position;
             bulletRight.Direction.Normalize();
-            bulletRight.Speed = 20f;
+            bulletRight.Speed = 18f;
             BulletList.Add(bulletRight);
         }
 

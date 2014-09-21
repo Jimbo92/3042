@@ -18,10 +18,17 @@ namespace _3042
         public Vector2 Position;
         public Vector2 Direction;
         public float Speed;
+        public Rectangle CollisionBox;
+        public bool isAlive = true;
+        public bool DebugMode = false;
+
+        private Texture2D CollisionBoxTexture;
 
         public void Update(ContentManager getContent, string getTexture, int getWidth, int getHeight)
         {
             sprite = new BasicSprite(getContent, getTexture, getWidth, getHeight);
+
+            CollisionBoxTexture = getContent.Load<Texture2D>("graphics/collisionbox");
 
             sprite.Position = Position;
 
@@ -31,7 +38,17 @@ namespace _3042
 
         public void Draw(SpriteBatch sB)
         {
-            sprite.Draw(sB);
+            if (isAlive)
+            {
+                sprite.Draw(sB);
+                CollisionBox = new Rectangle((int)Position.X - sprite.Width / 2, (int)Position.Y - sprite.Height / 2, sprite.Width, sprite.Height);
+
+                if (DebugMode)
+                    sB.Draw(CollisionBoxTexture, CollisionBox, Color.White);
+
+            }
+            else
+                CollisionBox = Rectangle.Empty;
         }
 
     }
