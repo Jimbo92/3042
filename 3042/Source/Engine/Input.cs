@@ -14,8 +14,8 @@ namespace _3042
 {
     static class Input
     {
-        static public KeyboardState PreviousKeyboard;
-        static public KeyboardState CurrentKeyboard;
+        static private KeyboardState PreviousKeyboard;
+        static private KeyboardState CurrentKeyboard;
 
         static public bool KeyboardPressed(Keys key)
         {
@@ -46,8 +46,8 @@ namespace _3042
                 return false;
         }
 
-        static public MouseState PreviousMouse;
-        static public MouseState CurrentMouse;
+        static private MouseState PreviousMouse;
+        static private MouseState CurrentMouse;
 
         public enum EClicks
         {

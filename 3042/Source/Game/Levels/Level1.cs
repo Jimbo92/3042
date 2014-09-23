@@ -16,6 +16,8 @@ namespace _3042
     {
         public Level_Base BaseCode;
 
+        private int GameTicks;
+
         public Level1(ContentManager getContent, Rectangle getScreenSize)
         {
             BaseCode = new Level_Base(getContent, getScreenSize);
@@ -27,10 +29,20 @@ namespace _3042
         public void Update(GameTime getGameTime)
         {
             BaseCode.Update(getGameTime);
+            GameTicks = getGameTime.TotalGameTime.Seconds;
             //Code bellow this
 
 
-
+            if (GameTicks >= 5 && GameTicks <= 10)
+            {
+                BaseCode.RandAsteroidWave(200);
+                BaseCode.SmallEnemyWave(50, new Vector2(50, 100), new Vector2(800, 200), 2f);
+            }
+            if (GameTicks >= 8 && GameTicks <= 15)
+            {
+                BaseCode.RandAsteroidWave(200);
+                BaseCode.SmallEnemyWave(100, new Vector2(350, 100), new Vector2(-100, 200), 2f);
+            }
 
         }
 

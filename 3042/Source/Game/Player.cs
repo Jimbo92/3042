@@ -33,37 +33,44 @@ namespace _3042
             MAX
         };
         EMoveAnim _moveAnimation = EMoveAnim.STOP;
-        public EControls _controls = EControls.KEYBOARD;
-        public EWeaponType _weaponType = EWeaponType.MAX;
+        public EControls _controls = EControls.MOUSE;
+        public EWeaponType _weaponType = EWeaponType.BASIC;
 
         //Varibles
         public AnimSprite Sprite;
         public AnimSprite BackBurnerEffect;
-        public Vector2 BackBurnerEffectPos;
         public Vector2 Position;
-
+        public Vector2 GotoPos;
+        public Rectangle CollisionBox;
         public List<Bullet> BulletList = new List<Bullet>();
+        public bool isAlive = true;
+        public bool isImmune = true;
+        public bool ControlsEnabled = true;
+        public bool isReset = true;
+        public int ImmuneTimer;
 
+        private AnimSprite ShieldEffect;
         private Rectangle ScreenSize;
         private Vector2 Direction;
         private float Speed = 0;
         private float DeltaTime;
-        private Vector2 GotoPos;
         private ContentManager Content;
+        private int ShootTimer;
 
         public Player(ContentManager getContent, Rectangle getScreenSize)
         {
             ScreenSize = getScreenSize;
             Content = getContent;
 
-            GotoPos = new Vector2(ScreenSize.X / 2 + 1, ScreenSize.Y / 2);
+            GotoPos = new Vector2(ScreenSize.X / 2 + 1, ScreenSize.Y - 50);
 
             Sprite = new AnimSprite(getContent, "graphics/playerss", 48, 48, 1, 7);
             Sprite.currentFrame = 3;
             Position.X = getScreenSize.X / 2;
-            Position.Y = getScreenSize.Y / 2;
+            Position.Y = ScreenSize.Y - 50;
 
-            BackBurnerEffect = new AnimSprite(getContent, "graphics/backburnerss", 40, 32, 1, 5);
+            BackBurnerEffect = new AnimSprite(getContent, "graphics/BackBurner2SS", 32, 32, 4, 1);
+            ShieldEffect = new AnimSprite(getContent, "graphics/shieldss", Sprite.Width * 2, Sprite.Height * 2, 1, 8);
 
         }
 
@@ -72,27 +79,38 @@ namespace _3042
             //Misc
             DeltaTime = (float)getGameTime.ElapsedGameTime.TotalMilliseconds / 12;
 
-            SetupAnimations();
-
-            Weapon();
-            
-
-            switch (_controls)
+            if (isReset)
             {
-                case EControls.KEYBOARD: KeyboardControls(); break;
-                case EControls.MOUSE:    MouseControls();    break;
+                Reset();
             }
 
-            //Player Movement
-            Direction = GotoPos - Position;
-            Speed = Direction.Length() * 0.1f;
-            Direction.Normalize();
-            Position += Direction * Speed;
+            if (isAlive)
+            {
+                SetupAnimations();
 
-            //Backburner effect
-            BackBurnerEffect.UpdateAnimation(0.3f);
-            BackBurnerEffectPos.X = Position.X;
-            BackBurnerEffectPos.Y = Position.Y + 30;
+                if (ControlsEnabled)
+                {
+                    Weapon();
+                    switch (_controls)
+                    {
+                        case EControls.KEYBOARD: KeyboardControls(); break;
+                        case EControls.MOUSE: MouseControls(); break;
+                    }
+                }
+
+                //Player Movement
+                Direction = GotoPos - Position;
+                Speed = Direction.Length() * 0.1f;
+                Direction.Normalize();
+                Position += Direction * Speed;
+
+                //Backburner effect
+                BackBurnerEffect.UpdateAnimation(0.5f);
+
+                //Shield effect
+                ShieldEffect.UpdateAnimation(0.5f);
+                
+            }
 
         }
 
@@ -100,18 +118,28 @@ namespace _3042
         {
             if (Input.KeyboardPressed(Keys.RightControl) && _controls == EControls.KEYBOARD ||
                 Input.ClickPressed(Input.EClicks.LEFT) && _controls == EControls.MOUSE)
-            {
                 Shoot();
+
+            if (Input.KeyboardPress(Keys.RightControl) && _controls == EControls.KEYBOARD ||
+                Input.ClickPress(Input.EClicks.LEFT) && _controls == EControls.MOUSE)
+            {
+                ShootTimer++;
+                if (ShootTimer >= 10)
+                {
+                    Shoot();
+                    ShootTimer = 0;
+                }
             }
+            else
+                ShootTimer = 0;
 
             for (int i = 0; i < BulletList.Count; i++)
             {
-                BulletList[i].Update(Content, "graphics/pbullet", 5, 32);
+                BulletList[i].Update();
             }
 
         }
-
-        public void Shoot()
+        private void Shoot()
         {
             switch (_weaponType)
             {
@@ -130,46 +158,65 @@ namespace _3042
 
             }
         }
-
         private void ShootBasic()
         {
-            Bullet bullet = new Bullet();
+            Bullet bullet = new Bullet(Content, "graphics/PBullet2", 32, 48, 2, 1);
+            bullet._spriteType = Bullet.ESpriteType.ANIM;
+            bullet.Delay = 0.3f;
+            bullet.FirePosition = new Vector2(Position.X, Position.Y - 25);
             bullet.Position = new Vector2(Position.X, Position.Y - 50);
             bullet.Direction = new Vector2(Position.X, -100) - bullet.Position;
             bullet.Direction.Normalize();
-            bullet.Speed = 20f;
+            bullet.Speed = 15f;
+            bullet.Damage = 20;
             BulletList.Add(bullet);
         }
         private void ShootAdvanced()
         {
-            Bullet bulletLeft = new Bullet();
+            Bullet bulletLeft = new Bullet(Content, "graphics/PBullet2", 32, 48, 2, 1);
+            bulletLeft._spriteType = Bullet.ESpriteType.ANIM;
+            bulletLeft.Delay = 0.3f;
+            bulletLeft.FirePosition = new Vector2(Position.X - 17, Position.Y - 10);
             bulletLeft.Position = new Vector2(Position.X - 20, Position.Y - 25);
             bulletLeft.Direction = new Vector2(Position.X - 20, -100) - bulletLeft.Position;
             bulletLeft.Direction.Normalize();
             bulletLeft.Speed = 15f;
+            bulletLeft.Damage = 10;
             BulletList.Add(bulletLeft);
 
-            Bullet bulletRight = new Bullet();
+            Bullet bulletRight = new Bullet(Content, "graphics/PBullet2", 32, 48, 2, 1);
+            bulletRight._spriteType = Bullet.ESpriteType.ANIM;
+            bulletRight.Delay = 0.3f;
+            bulletRight.FirePosition = new Vector2(Position.X + 17, Position.Y - 10);
             bulletRight.Position = new Vector2(Position.X + 20, Position.Y - 25);
             bulletRight.Direction = new Vector2(Position.X + 20, -100) - bulletRight.Position;
             bulletRight.Direction.Normalize();
             bulletRight.Speed = 15f;
+            bulletRight.Damage = 10;
             BulletList.Add(bulletRight);
         }
         private void ShootMax()
         {
-            Bullet bulletLeft = new Bullet();
+            Bullet bulletLeft = new Bullet(Content, "graphics/PBullet2", 32, 48, 2, 1);
+            bulletLeft._spriteType = Bullet.ESpriteType.ANIM;
+            bulletLeft.Delay = 0.3f;
+            bulletLeft.FirePosition = new Vector2(Position.X - 5, Position.Y - 25);
             bulletLeft.Position = new Vector2(Position.X, Position.Y - 25);
             bulletLeft.Direction = new Vector2(Position.X - 100, -100) - bulletLeft.Position;
             bulletLeft.Direction.Normalize();
             bulletLeft.Speed = 18f;
+            bulletLeft.Damage = 5;
             BulletList.Add(bulletLeft);
 
-            Bullet bulletRight = new Bullet();
+            Bullet bulletRight = new Bullet(Content, "graphics/PBullet2", 32, 48, 2, 1);
+            bulletRight._spriteType = Bullet.ESpriteType.ANIM;
+            bulletRight.Delay = 0.3f;
+            bulletRight.FirePosition = new Vector2(Position.X + 5, Position.Y - 25);
             bulletRight.Position = new Vector2(Position.X, Position.Y - 25);
             bulletRight.Direction = new Vector2(Position.X + 100, -100) - bulletRight.Position;
             bulletRight.Direction.Normalize();
             bulletRight.Speed = 18f;
+            bulletRight.Damage = 5;
             BulletList.Add(bulletRight);
         }
 
@@ -202,7 +249,6 @@ namespace _3042
              else
                  _moveAnimation = EMoveAnim.STOP;
         }
-
         private void MouseControls()
         {
             GotoPos.X = Mouse.GetState().X;
@@ -258,15 +304,50 @@ namespace _3042
 
         }
 
+        private void Reset()
+        {
+            isAlive = true;
+            isImmune = true;
+            ControlsEnabled = true;
+            isReset = false;
+        }
+
         public void Draw(SpriteBatch sB)
         {
-            for (int i = 0; i < BulletList.Count; i++)
+            if (isAlive)
             {
-                BulletList[i].Draw(sB);
-            }
+                for (int i = 0; i < BulletList.Count; i++)
+                {
+                    BulletList[i].Draw(sB);
+                }
 
-            BackBurnerEffect.Draw(sB, BackBurnerEffectPos);
-            Sprite.Draw(sB, Position);
+                BackBurnerEffect.Draw(sB, new Vector2(Position.X, Position.Y + 22));
+                Sprite.Draw(sB, Position);
+
+                if (isImmune)
+                {
+                    ImmuneTimer++;
+                    if (ImmuneTimer <= 300)
+                    {
+                        ShieldEffect.Draw(sB, Position, MathHelper.ToRadians(180));
+                    }
+                    else
+                    {
+                        ImmuneTimer = 301;
+                        isImmune = false;
+                    }
+                }
+
+                CollisionBox = new Rectangle((int)Position.X - Sprite.Width / 4, (int)Position.Y - Sprite.Height / 2, Sprite.Width / 2, Sprite.Height);
+            }
+            else
+            {
+                CollisionBox = Rectangle.Empty;
+                for (int i = 0; i < BulletList.Count; i++)
+                {
+                    BulletList[i].CollisionBox = Rectangle.Empty;
+                }
+            }
         }
     }
 }

@@ -18,6 +18,7 @@ namespace _3042
         public int Width;
         public int Height;
         public Vector2 Position;
+        public Rectangle _destinationRectangle;
 
         public BasicSprite(ContentManager getContent, string getTexture, int getWidth, int getHeight)
         {
@@ -31,9 +32,9 @@ namespace _3042
         {
         }
 
-        public void Draw(SpriteBatch sB)
+        public void Draw(SpriteBatch sB, Vector2 getPosition)
         {
-            Rectangle _destinationRectangle = new Rectangle((int)Position.X, (int)Position.Y, Width, Height);
+            _destinationRectangle = new Rectangle((int)getPosition.X, (int)getPosition.Y, Width, Height);
 
             sB.Draw(Texture,
                 _destinationRectangle,
@@ -42,8 +43,33 @@ namespace _3042
                 0,
                 new Vector2(_destinationRectangle.Width / 2, _destinationRectangle.Height / 2),
                 SpriteEffects.None,
+                0);       
+        }
+        public void Draw(SpriteBatch sB, Vector2 getPosition, float getRotation)
+        {
+            _destinationRectangle = new Rectangle((int)getPosition.X, (int)getPosition.Y, Width, Height);
+
+            sB.Draw(Texture,
+                _destinationRectangle,
+                null,
+                Color.White,
+                getRotation,
+                new Vector2(_destinationRectangle.Width / 2, _destinationRectangle.Height / 2),
+                SpriteEffects.None,
                 0);
-                
+        }
+        public void Draw(SpriteBatch sB, Vector2 getPosition, Vector2 getOrigin, float getRotation)
+        {
+            _destinationRectangle = new Rectangle((int)getPosition.X, (int)getPosition.Y, Width, Height);
+
+            sB.Draw(Texture,
+                _destinationRectangle,
+                null,
+                Color.White,
+                getRotation,
+                getOrigin,
+                SpriteEffects.None,
+                0);
         }
 
     }

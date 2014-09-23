@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.GamerServices;
 
 namespace _3042
 {
-    class Bullet
+    class Enemy
     {
         public enum ESpriteType
         {
@@ -20,44 +20,50 @@ namespace _3042
             BASIC
         };
 
-        public BasicSprite sprite;
+        public BasicSprite Sprite;
         public AnimSprite SpriteAnim;
         public Vector2 Position;
         public Vector2 Direction;
+        public Vector2 GotoPos;
+        public Vector2 GotoPos2;
         public float Speed;
-        public Rectangle CollisionBox;
+        public float Delay;
         public bool isAlive = true;
         public bool DebugMode = false;
-        public float Delay;
-        public Vector2 FirePosition;
-        public float Damage;
+        public Rectangle CollisionBox;
+        public float Health;
+        public float MaxHealth;
+        public int Score;
+        public bool isWarpIn = false;
 
+        private int ScoreTimer;
+        private ContentManager Content;
         private AnimSprite ExplosionAnim;
         private bool isExplosion = false;
-        private AnimSprite ShootAnim;
-        private bool isShooting = true;
-        private ContentManager Content;
         private Texture2D CollisionBoxTexture;
+        private AnimSprite WarpInEffect;
+        private int TimerTest;
 
         public ESpriteType _spriteType = ESpriteType.BASIC;
 
-
-        public Bullet(ContentManager getContent, string getTexture, int getWidth, int getHeight)
+        public Enemy(ContentManager getContent, string getTexture, int getWidth, int getHeight)
         {
             Content = getContent;
-            sprite = new BasicSprite(getContent, getTexture, getWidth, getHeight);
-            ExplosionAnim = new AnimSprite(Content, "graphics/BulletExplosion2SS", getWidth, getHeight * 2, 1, 4);
-            ShootAnim = new AnimSprite(Content, "graphics/ShootEffect1SS", getWidth, getHeight, 2, 1);
+
+            Sprite = new BasicSprite(getContent, getTexture, getWidth, getHeight);
+            ExplosionAnim = new AnimSprite(Content, "graphics/Explosion1SS", getWidth * 2, getHeight * 2, 1, 8);
+            WarpInEffect = new AnimSprite(Content, "graphics/warpinss", Sprite.Width * 4, Sprite.Height * 3, 1, 9);
         }
-        public Bullet(ContentManager getContent, string getTexture, int getWidth, int getHeight, int getRows, int getColumns)
+        public Enemy(ContentManager getContent, string getTexture, int getWidth, int getHeight, int getRows, int getColumns)
         {
             Content = getContent;
-            SpriteAnim = new AnimSprite(Content, getTexture, getWidth, getHeight, getRows, getColumns);
-            ExplosionAnim = new AnimSprite(Content, "graphics/BulletExplosion2SS", getWidth, getHeight * 2, 1, 4);
-            ShootAnim = new AnimSprite(Content, "graphics/ShootEffect1SS", getWidth, getHeight, 2, 1);
+
+            SpriteAnim = new AnimSprite(getContent, getTexture, getWidth, getHeight, getRows, getColumns);
+            ExplosionAnim = new AnimSprite(Content, "graphics/Explosion1SS", getWidth * 2, getHeight * 2, 1, 8);
+            //WarpInEffect = new AnimSprite(Content, "graphics/warpinss", Sprite.Width * 2, Sprite.Height * 2, 1, 8);
         }
 
-        public void Update()
+        public void Update(GUI getGUI)
         {
             CollisionBoxTexture = Content.Load<Texture2D>("graphics/collisionbox");
 
@@ -66,20 +72,41 @@ namespace _3042
 
             Position += Direction * Speed;
 
+            if (Health <= 0)
+            {
+                isAlive = false;
+
+                ScoreTimer++;
+                if (ScoreTimer <= 1)
+                    getGUI.Score += Score;
+                else
+                    ScoreTimer = 2;
+            }
+
             if (Position.Y >= 800 || Position.Y <= -100)
                 isAlive = false;
+
         }
 
         public void Draw(SpriteBatch sB)
         {
             if (isAlive)
             {
+                if (isWarpIn)
+                {
+                    if (!WarpInEffect.AnimationFinnished)
+                    {
+                        WarpInEffect.UpdateAnimation(0.4f);
+                        WarpInEffect.Draw(sB, new Vector2(Position.X + 15, Position.Y), MathHelper.ToRadians(270));
+                    }
+                }
+
                 switch (_spriteType)
                 {
                     case ESpriteType.BASIC:
                         {
-                            sprite.Draw(sB, Position);
-                            CollisionBox = new Rectangle((int)Position.X - sprite.Width / 2, (int)Position.Y - sprite.Height / 2, sprite.Width, sprite.Height);
+                            Sprite.Draw(sB, Position);
+                            CollisionBox = new Rectangle((int)Position.X - Sprite.Width / 2, (int)Position.Y - Sprite.Height / 2, Sprite.Width, Sprite.Height);
                         }; break;
 
                     case ESpriteType.ANIM:
@@ -88,21 +115,10 @@ namespace _3042
                             CollisionBox = new Rectangle((int)Position.X - SpriteAnim.Width / 2, (int)Position.Y - SpriteAnim.Height / 2, SpriteAnim.Width, SpriteAnim.Height);
                         }; break;
                 }
+
                 if (DebugMode)
                     sB.Draw(CollisionBoxTexture, CollisionBox, Color.White);
-
-                if (!ShootAnim.AnimationFinnished)
-                    isShooting = true;
-                else
-                    isShooting = false;
-
-                if (isShooting)
-                {
-                    ShootAnim.UpdateAnimation(1f);
-                    ShootAnim.Draw(sB, FirePosition);
-                }
-
-            }           
+            }
             else
             {
                 CollisionBox = Rectangle.Empty;
@@ -114,7 +130,6 @@ namespace _3042
 
                 if (isExplosion)
                 {
-                    Speed = 5f;
                     ExplosionAnim.UpdateAnimation(0.3f);
                     ExplosionAnim.Draw(sB, Position);
                 }

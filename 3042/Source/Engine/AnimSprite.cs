@@ -66,6 +66,26 @@ namespace _3042
                 SpriteEffects.None,
                 0);
         }
+        public void Draw(SpriteBatch sB, Vector2 getLocation, float getRotation)
+        {
+            int sourceWidth = Texture.Width / Columns;
+            int sourceHeight = Texture.Height / Rows;
+
+            int row = (int)((float)currentFrame / (float)Columns);
+            int column = (int)currentFrame % Columns;
+
+            Rectangle sourceRectangle = new Rectangle(sourceWidth * column, sourceHeight * row, sourceWidth, sourceHeight);
+            Rectangle destinationRectangle = new Rectangle((int)getLocation.X, (int)getLocation.Y, Width, Height);
+
+            sB.Draw(Texture,
+                destinationRectangle,
+                sourceRectangle,
+                Color.White,
+                getRotation,
+                new Vector2(sourceRectangle.Width / 2, sourceRectangle.Height / 2),
+                SpriteEffects.None,
+                0);
+        }
 
     }
 }
