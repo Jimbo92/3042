@@ -42,14 +42,14 @@ namespace _3042
         private bool isExplosion = false;
         private Texture2D CollisionBoxTexture;
         private AnimSprite WarpInEffect;
-        private int TimerTest;
+        private Font DisplayScore;
 
         public ESpriteType _spriteType = ESpriteType.BASIC;
 
         public Enemy(ContentManager getContent, string getTexture, int getWidth, int getHeight)
         {
             Content = getContent;
-
+            DisplayScore = new Font(getContent);
             Sprite = new BasicSprite(getContent, getTexture, getWidth, getHeight);
             ExplosionAnim = new AnimSprite(Content, "graphics/Explosion1SS", getWidth * 2, getHeight * 2, 1, 8);
             WarpInEffect = new AnimSprite(Content, "graphics/warpinss", Sprite.Width * 4, Sprite.Height * 3, 1, 9);
@@ -57,7 +57,7 @@ namespace _3042
         public Enemy(ContentManager getContent, string getTexture, int getWidth, int getHeight, int getRows, int getColumns)
         {
             Content = getContent;
-
+            DisplayScore = new Font(getContent);
             SpriteAnim = new AnimSprite(getContent, getTexture, getWidth, getHeight, getRows, getColumns);
             ExplosionAnim = new AnimSprite(Content, "graphics/Explosion1SS", getWidth * 2, getHeight * 2, 1, 8);
             //WarpInEffect = new AnimSprite(Content, "graphics/warpinss", Sprite.Width * 2, Sprite.Height * 2, 1, 8);
@@ -83,7 +83,7 @@ namespace _3042
                     ScoreTimer = 2;
             }
 
-            if (Position.Y >= 800 || Position.Y <= -100)
+            if (Position.Y >= 800 || Position.Y <= -100 || Position.X >= 800 || Position.X <= -100)
                 isAlive = false;
 
         }
@@ -132,6 +132,7 @@ namespace _3042
                 {
                     ExplosionAnim.UpdateAnimation(0.3f);
                     ExplosionAnim.Draw(sB, Position);
+                    DisplayScore.Draw(sB, Score.ToString(), Position, .5f, Color.Gold);
                 }
             }
         }

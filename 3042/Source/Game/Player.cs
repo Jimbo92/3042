@@ -56,6 +56,7 @@ namespace _3042
         private float DeltaTime;
         private ContentManager Content;
         private int ShootTimer;
+        private AnimSprite Cursor;
 
         public Player(ContentManager getContent, Rectangle getScreenSize)
         {
@@ -71,7 +72,7 @@ namespace _3042
 
             BackBurnerEffect = new AnimSprite(getContent, "graphics/BackBurner2SS", 32, 32, 4, 1);
             ShieldEffect = new AnimSprite(getContent, "graphics/shieldss", Sprite.Width * 2, Sprite.Height * 2, 1, 8);
-
+            Cursor = new AnimSprite(getContent, "graphics/cursor", 64, 48, 1, 3);
         }
 
         public void Update(GameTime getGameTime)
@@ -109,6 +110,9 @@ namespace _3042
 
                 //Shield effect
                 ShieldEffect.UpdateAnimation(0.5f);
+
+                //Cursor
+                Cursor.currentFrame = 0;
                 
             }
 
@@ -348,6 +352,9 @@ namespace _3042
                     BulletList[i].CollisionBox = Rectangle.Empty;
                 }
             }
+
+            if(_controls == EControls.MOUSE)
+                Cursor.Draw(sB, new Vector2(GotoPos.X - 8, GotoPos.Y));
         }
     }
 }
