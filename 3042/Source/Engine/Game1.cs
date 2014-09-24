@@ -17,7 +17,6 @@ namespace _3042
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Rectangle ScreenSize;
-        BasicSprite MenuBackground;
 
         //Level1
         Level1 _level1;
@@ -52,7 +51,6 @@ namespace _3042
             //Misc
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            MenuBackground = new BasicSprite(Content, "graphics/menubackground", ScreenSize.Width, ScreenSize.Height);
 
             _level1 = new Level1(Content, ScreenSize);
 
@@ -67,12 +65,6 @@ namespace _3042
 
             IsMouseVisible = false;
             _level1.Update(gameTime);
-
-            //switch (GameMode.Mode)
-            //{
-            //    case GameMode.EGameMode.MENU: ; break;
-            //    case GameMode.EGameMode.LEVELSELECT: _level1.Update(gameTime); break;
-            //}
             
 
             //Code Above this
@@ -87,12 +79,6 @@ namespace _3042
             //Code Bellow this
 
             _level1.Draw(spriteBatch);
-
-            //switch (GameMode.Mode)
-            //{
-            //    case GameMode.EGameMode.MENU: MenuBackground.Draw(spriteBatch, new Vector2(ScreenSize.Width / 2 + 75, ScreenSize.Height / 2 - 110)); break;
-            //    case GameMode.EGameMode.LEVELSELECT: _level1.Draw(spriteBatch); break;
-            //}
 
             //Code Above this
             spriteBatch.End();

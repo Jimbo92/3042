@@ -34,7 +34,7 @@ namespace _3042
         };
         EMoveAnim _moveAnimation = EMoveAnim.STOP;
         public EControls _controls = EControls.MOUSE;
-        public EWeaponType _weaponType = EWeaponType.BASIC;
+        public EWeaponType _weaponType = EWeaponType.ADVANCED;
 
         //Varibles
         public AnimSprite Sprite;
@@ -49,6 +49,8 @@ namespace _3042
         public bool isReset = true;
         public int ImmuneTimer;
 
+        private SoundEffect[] PlayerShootSFX = new SoundEffect[3];
+        private SoundEffectInstance[] PlayerShootSFXIns = new SoundEffectInstance[3];
         private AnimSprite ShieldEffect;
         private Rectangle ScreenSize;
         private Vector2 Direction;
@@ -73,6 +75,11 @@ namespace _3042
             BackBurnerEffect = new AnimSprite(getContent, "graphics/BackBurner2SS", 32, 32, 4, 1);
             ShieldEffect = new AnimSprite(getContent, "graphics/shieldss", Sprite.Width * 2, Sprite.Height * 2, 1, 8);
             Cursor = new AnimSprite(getContent, "graphics/cursor", 64, 48, 1, 3);
+
+            PlayerShootSFX[0] = Content.Load<SoundEffect>("sound/playershoot2");
+            PlayerShootSFX[1] = Content.Load<SoundEffect>("sound/playershoot3");
+            PlayerShootSFX[2] = Content.Load<SoundEffect>("sound/playershoot3");
+            
         }
 
         public void Update(GameTime getGameTime)
@@ -145,6 +152,24 @@ namespace _3042
         }
         private void Shoot()
         {
+            for (int i = 0; i < 3; i++)
+            {
+                PlayerShootSFXIns[i] = PlayerShootSFX[i].CreateInstance();
+                PlayerShootSFXIns[i].Volume = 0.1f;
+            }
+
+            Random RandShootSFX = new Random();
+            int RandShootSFXNum = RandShootSFX.Next(3);
+
+            switch (RandShootSFXNum)
+            {
+                case 0: PlayerShootSFXIns[0].Play(); break;
+                case 1: PlayerShootSFXIns[1].Play(); break;
+                case 2: PlayerShootSFXIns[2].Play(); break;
+            }
+
+
+
             switch (_weaponType)
             {
                 case EWeaponType.BASIC: ShootBasic(); break;
@@ -159,7 +184,6 @@ namespace _3042
                         ShootAdvanced();
                         ShootMax();
                     }; break;
-
             }
         }
         private void ShootBasic()
