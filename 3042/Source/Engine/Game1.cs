@@ -7,6 +7,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
+using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Audio;
 #endregion
 
 namespace _3042
@@ -17,6 +19,10 @@ namespace _3042
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Rectangle ScreenSize;
+
+        //Music
+        SoundEffect BackgroundMusicSong;
+        SoundEffectInstance BackgroundMusicSongIns;
 
         //Level1
         Level1 _level1;
@@ -51,6 +57,15 @@ namespace _3042
             //Misc
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            //Music
+            BackgroundMusicSong = Content.Load<SoundEffect>("sound/Backgroundmusic");
+            BackgroundMusicSongIns = BackgroundMusicSong.CreateInstance();
+            BackgroundMusicSongIns.IsLooped = true;
+            BackgroundMusicSongIns.Volume = 0.03f;
+            BackgroundMusicSongIns.Play();
+
+            
+            
 
             _level1 = new Level1(Content, ScreenSize);
 

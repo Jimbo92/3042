@@ -34,7 +34,7 @@ namespace _3042
         };
         EMoveAnim _moveAnimation = EMoveAnim.STOP;
         public EControls _controls = EControls.MOUSE;
-        public EWeaponType _weaponType = EWeaponType.ADVANCED;
+        public EWeaponType _weaponType = EWeaponType.BASIC;
 
         //Varibles
         public AnimSprite Sprite;
@@ -49,8 +49,9 @@ namespace _3042
         public bool isReset = true;
         public int ImmuneTimer;
 
-        private SoundEffect[] PlayerShootSFX = new SoundEffect[3];
-        private SoundEffectInstance[] PlayerShootSFXIns = new SoundEffectInstance[3];
+        private Random RandShootSFX = new Random();
+        private SoundEffect[] PlayerShootSFX = new SoundEffect[2];
+        private SoundEffectInstance[] PlayerShootSFXIns = new SoundEffectInstance[2];
         private AnimSprite ShieldEffect;
         private Rectangle ScreenSize;
         private Vector2 Direction;
@@ -78,7 +79,6 @@ namespace _3042
 
             PlayerShootSFX[0] = Content.Load<SoundEffect>("sound/playershoot2");
             PlayerShootSFX[1] = Content.Load<SoundEffect>("sound/playershoot3");
-            PlayerShootSFX[2] = Content.Load<SoundEffect>("sound/playershoot3");
             
         }
 
@@ -152,20 +152,20 @@ namespace _3042
         }
         private void Shoot()
         {
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 2; i++)
             {
                 PlayerShootSFXIns[i] = PlayerShootSFX[i].CreateInstance();
-                PlayerShootSFXIns[i].Volume = 0.1f;
+                PlayerShootSFXIns[i].Volume = 0.5f;
+                PlayerShootSFXIns[i].Pitch = -1.5f;
             }
 
-            Random RandShootSFX = new Random();
-            int RandShootSFXNum = RandShootSFX.Next(3);
+
+            int RandShootSFXNum = RandShootSFX.Next(2);
 
             switch (RandShootSFXNum)
             {
                 case 0: PlayerShootSFXIns[0].Play(); break;
                 case 1: PlayerShootSFXIns[1].Play(); break;
-                case 2: PlayerShootSFXIns[2].Play(); break;
             }
 
 

@@ -20,6 +20,8 @@ namespace _3042
         private int GameTicks;
         private Rectangle ScreenSize;
         private int AsteroidWarningTimer;
+        private SoundEffect WarningSFX;
+        private SoundEffectInstance WarningSFXIns;
 
         public Level1(ContentManager getContent, Rectangle getScreenSize)
         {
@@ -29,6 +31,10 @@ namespace _3042
             //Code Bellow this
 
             AsteroidWarning = new Font(getContent);
+            WarningSFX = getContent.Load<SoundEffect>("sound/warning");
+            WarningSFXIns = WarningSFX.CreateInstance();
+            WarningSFXIns.Volume = 0.1f;
+            WarningSFXIns.Pitch = 0.5f;
 
         }
 
@@ -65,6 +71,8 @@ namespace _3042
 
             if (GameTicks >= 20 && GameTicks <= 20.5)
             {
+                WarningSFXIns.Play();
+
                 AsteroidWarningTimer++;
                 if (AsteroidWarningTimer >= 3)
                 {

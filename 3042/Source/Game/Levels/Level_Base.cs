@@ -126,7 +126,7 @@ namespace _3042
             {
                 if (CheckCollision.Collision(enemy.CollisionBox, player.CollisionBox))
                 {
-                    enemy.isAlive = false;
+                    enemy.Health = 0;
 
                     if (!player.isImmune)
                     {
@@ -140,7 +140,6 @@ namespace _3042
                     if (CheckCollision.Collision(bullet.CollisionBox, enemy.CollisionBox))
                     {
                         enemy.Health -= bullet.Damage;
-
                         bullet.isAlive = false;
                     }
                 }

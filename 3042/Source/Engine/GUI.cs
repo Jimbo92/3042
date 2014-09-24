@@ -38,9 +38,9 @@ namespace _3042
             HealthBar = new BasicSprite(getContent, "graphics/healthbar", 20, (int)PlayerHealth);
 
             //Lives
-            AddLives(new Vector2(50, ScreenSize.Y - 80));
-            AddLives(new Vector2(90, ScreenSize.Y - 80));
             AddLives(new Vector2(130, ScreenSize.Y - 80));
+            AddLives(new Vector2(90, ScreenSize.Y - 80));
+            AddLives(new Vector2(50, ScreenSize.Y - 80));
         }
 
         public void Update(Player getPlayer)
@@ -72,9 +72,9 @@ namespace _3042
 
             if (ResetLives)
             {
-                AddLives(new Vector2(50, ScreenSize.Y - 80));
-                AddLives(new Vector2(90, ScreenSize.Y - 80));
                 AddLives(new Vector2(130, ScreenSize.Y - 80));
+                AddLives(new Vector2(90, ScreenSize.Y - 80));
+                AddLives(new Vector2(50, ScreenSize.Y - 80));
             }
         }
         private void AddLives(Vector2 getPosition)
