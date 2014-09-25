@@ -22,8 +22,8 @@ namespace _3042
         public float currentFrame;
         public float totalFrames;
         public bool AnimationFinnished = false;
-
-        private int DelayTime;
+        public Rectangle sourceRectangle;
+        public Rectangle destinationRectangle;
 
         public AnimSprite(ContentManager getContent, string getTexture, int getWidth, int getHeight, int getRows, int getColumns)
         {
@@ -54,8 +54,8 @@ namespace _3042
             int row = (int)((float)currentFrame / (float)Columns);
             int column = (int)currentFrame % Columns;
 
-            Rectangle sourceRectangle = new Rectangle(sourceWidth * column, sourceHeight * row, sourceWidth, sourceHeight);
-            Rectangle destinationRectangle = new Rectangle((int)getLocation.X, (int)getLocation.Y, Width, Height);
+            sourceRectangle = new Rectangle(sourceWidth * column, sourceHeight * row, sourceWidth, sourceHeight);
+            destinationRectangle = new Rectangle((int)getLocation.X, (int)getLocation.Y, Width, Height);
 
             sB.Draw(Texture,
                 destinationRectangle,
@@ -74,8 +74,8 @@ namespace _3042
             int row = (int)((float)currentFrame / (float)Columns);
             int column = (int)currentFrame % Columns;
 
-            Rectangle sourceRectangle = new Rectangle(sourceWidth * column, sourceHeight * row, sourceWidth, sourceHeight);
-            Rectangle destinationRectangle = new Rectangle((int)getLocation.X, (int)getLocation.Y, Width, Height);
+            sourceRectangle = new Rectangle(sourceWidth * column, sourceHeight * row, sourceWidth, sourceHeight);
+            destinationRectangle = new Rectangle((int)getLocation.X, (int)getLocation.Y, Width, Height);
 
             sB.Draw(Texture,
                 destinationRectangle,

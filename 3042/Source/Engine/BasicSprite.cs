@@ -17,7 +17,6 @@ namespace _3042
         public Texture2D Texture;
         public int Width;
         public int Height;
-        public Vector2 Position;
         public Rectangle _destinationRectangle;
 
         public BasicSprite(ContentManager getContent, string getTexture, int getWidth, int getHeight)
@@ -26,10 +25,6 @@ namespace _3042
 
             Width = getWidth;
             Height = getHeight;
-        }
-
-        public void Update()
-        {
         }
 
         public void Draw(SpriteBatch sB, Vector2 getPosition)

@@ -36,6 +36,8 @@ namespace _3042
         public EControls _controls = EControls.MOUSE;
         public EWeaponType _weaponType = EWeaponType.BASIC;
 
+        Texture2D CollisionBoxTexture;
+
         //Varibles
         public AnimSprite Sprite;
         public AnimSprite BackBurnerEffect;
@@ -48,10 +50,16 @@ namespace _3042
         public bool ControlsEnabled = true;
         public bool isReset = true;
         public int ImmuneTimer;
+        public AnimSprite SecondaryFireAnim;
+        public AnimSprite SecondaryFireChargeUpAnim;
+        public Rectangle SecondaryFireRect;
+        public bool isAltFire;
 
         private Random RandShootSFX = new Random();
         private SoundEffect[] PlayerShootSFX = new SoundEffect[2];
         private SoundEffectInstance[] PlayerShootSFXIns = new SoundEffectInstance[2];
+        private SoundEffect[] PlayerAltSFX = new SoundEffect[2];
+        private SoundEffectInstance[] PlayerAltSFXIns = new SoundEffectInstance[2];
         private AnimSprite ShieldEffect;
         private Rectangle ScreenSize;
         private Vector2 Direction;
@@ -60,6 +68,8 @@ namespace _3042
         private ContentManager Content;
         private int ShootTimer;
         private AnimSprite Cursor;
+        private bool SecondaryFireShot;
+        private GUI gui;
 
         public Player(ContentManager getContent, Rectangle getScreenSize)
         {
@@ -73,19 +83,33 @@ namespace _3042
             Position.X = getScreenSize.X / 2;
             Position.Y = ScreenSize.Y - 50;
 
+            SecondaryFireAnim = new AnimSprite(getContent, "graphics/Secondfiress", ScreenSize.X / 2, ScreenSize.Y, 1, 8);
+            SecondaryFireChargeUpAnim = new AnimSprite(getContent, "graphics/plasmaball2ss", 164, 164, 4, 5);
+
+            CollisionBoxTexture = Content.Load<Texture2D>("graphics/collisionbox");
+
             BackBurnerEffect = new AnimSprite(getContent, "graphics/BackBurner2SS", 32, 32, 4, 1);
             ShieldEffect = new AnimSprite(getContent, "graphics/shieldss", Sprite.Width * 2, Sprite.Height * 2, 1, 8);
             Cursor = new AnimSprite(getContent, "graphics/cursor", 64, 48, 1, 3);
 
             PlayerShootSFX[0] = Content.Load<SoundEffect>("sound/playershoot2");
             PlayerShootSFX[1] = Content.Load<SoundEffect>("sound/playershoot3");
+            PlayerAltSFX[0] = Content.Load<SoundEffect>("sound/AltChargeUp");
+            PlayerAltSFX[1] = Content.Load<SoundEffect>("sound/AltFire");
+            for (int i = 0; i < 2; i++)
+            {
+                PlayerAltSFXIns[i] = PlayerAltSFX[i].CreateInstance();
+                PlayerAltSFXIns[i].Volume = 0.1f;
+            }
+            PlayerAltSFXIns[1].Pitch = 0.5f;
             
         }
 
-        public void Update(GameTime getGameTime)
+        public void Update(GameTime getGameTime, GUI getGUI)
         {
             //Misc
             DeltaTime = (float)getGameTime.ElapsedGameTime.TotalMilliseconds / 12;
+            gui = getGUI;
 
             if (isReset)
             {
@@ -144,6 +168,12 @@ namespace _3042
             else
                 ShootTimer = 0;
 
+            if (Input.KeyboardPressed(Keys.RightAlt) && _controls == EControls.KEYBOARD ||
+                Input.ClickPressed(Input.EClicks.RIGHT) && _controls == EControls.MOUSE)
+                if (isAltFire)
+                SecondaryFireShot = true;
+
+
             for (int i = 0; i < BulletList.Count; i++)
             {
                 BulletList[i].Update();
@@ -155,7 +185,7 @@ namespace _3042
             for (int i = 0; i < 2; i++)
             {
                 PlayerShootSFXIns[i] = PlayerShootSFX[i].CreateInstance();
-                PlayerShootSFXIns[i].Volume = 0.5f;
+                PlayerShootSFXIns[i].Volume = 0.6f;
                 PlayerShootSFXIns[i].Pitch = -1.5f;
             }
 
@@ -347,6 +377,42 @@ namespace _3042
                 for (int i = 0; i < BulletList.Count; i++)
                 {
                     BulletList[i].Draw(sB);
+                }
+
+                if (SecondaryFireShot)
+                {
+                    gui.AltBarAmount = 0;
+
+                    if (!SecondaryFireChargeUpAnim.AnimationFinnished)
+                    {
+                        PlayerAltSFXIns[0].Play();
+                        SecondaryFireChargeUpAnim.Height += 3;
+                        SecondaryFireChargeUpAnim.Width += 3;
+                        SecondaryFireChargeUpAnim.UpdateAnimation(0.5f);
+                        SecondaryFireChargeUpAnim.Draw(sB, new Vector2(Position.X, Position.Y - 20));
+                    }
+                    else
+                    {
+                        if (!SecondaryFireAnim.AnimationFinnished)
+                        {
+                            PlayerAltSFXIns[1].Play();
+                            SecondaryFireRect = new Rectangle((int)Position.X - SecondaryFireAnim.Width / 6, (int)Position.Y - SecondaryFireAnim.Height, ScreenSize.Width / 6, ScreenSize.Height);
+                            SecondaryFireAnim.UpdateAnimation(0.5f);
+                            SecondaryFireAnim.Draw(sB, new Vector2((int)Position.X, (int)Position.Y - SecondaryFireAnim.Height / 2));
+                            //sB.Draw(CollisionBoxTexture, SecondaryFireRect, Color.White);
+                        }
+                        else
+                        {
+                            SecondaryFireRect = Rectangle.Empty;
+                            SecondaryFireShot = false;
+                            SecondaryFireAnim.AnimationFinnished = false;
+                            SecondaryFireChargeUpAnim.AnimationFinnished = false;
+                            SecondaryFireChargeUpAnim.Height = 164;
+                            SecondaryFireChargeUpAnim.Width = 164;
+                        }
+                    }
+
+
                 }
 
                 BackBurnerEffect.Draw(sB, new Vector2(Position.X, Position.Y + 22));

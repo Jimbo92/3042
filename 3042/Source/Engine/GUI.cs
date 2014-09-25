@@ -20,12 +20,19 @@ namespace _3042
         public int PlayerLives = 3;
         public bool ResetLives = false;
         public float PlayerHealth = 100;
+        public float AltBarAmount = 100;
 
 
         private Rectangle ScreenSize;
         private ContentManager Content;
         private BasicSprite HealthBar;
+        private BasicSprite AltBar;
+        private BasicSprite[] BarBackground = new BasicSprite[2];
         private Player player;
+        private Font AltReady;
+        private int[] AltReadyTimer = new int[2];
+        private SoundEffect AltReadySFX;
+        private SoundEffectInstance AltReadyInsSFX;
 
         public GUI(ContentManager getContent, Rectangle getScreenSize)
         {
@@ -35,7 +42,16 @@ namespace _3042
             FontRegular = getContent.Load<SpriteFont>("fonts/font_regular");
 
             //Health Bar
-            HealthBar = new BasicSprite(getContent, "graphics/healthbar", 20, (int)PlayerHealth);
+            HealthBar = new BasicSprite(getContent, "graphics/healthbar", 30, (int)PlayerHealth);
+            //Alt Bar
+            AltBar = new BasicSprite(getContent, "graphics/altbar", 30, (int)AltBarAmount);
+            AltReady = new Font(getContent);
+            AltReadySFX = Content.Load<SoundEffect>("sound/altready");
+            AltReadyInsSFX = AltReadySFX.CreateInstance();
+            AltReadyInsSFX.Volume = 0.05f;
+            //Bar Background
+            for (int i = 0; i < 2; i++)
+                BarBackground[i] = new BasicSprite(Content, "graphics/barbackground", HealthBar.Width + 10, HealthBar.Height + 10);
 
             //Lives
             AddLives(new Vector2(130, ScreenSize.Y - 80));
@@ -47,12 +63,25 @@ namespace _3042
         {
             player = getPlayer;
 
-            HealthAndLives();
+            HealthAndAlt();
         }
 
-        private void HealthAndLives()
+        private void HealthAndAlt()
         {
             HealthBar.Height = (int)PlayerHealth;
+            AltBar.Height = (int)AltBarAmount;
+
+            if (AltBarAmount >= 100)
+            {
+                player.isAltFire = true;
+                AltBarAmount = 100;
+            }
+            else
+            {
+                AltBarAmount += 0.2f;
+                player.isAltFire = false;
+            }
+
             if (PlayerHealth <= 0)
             {
                 player.isReset = true;
@@ -98,9 +127,31 @@ namespace _3042
                 0.5f,
                 SpriteEffects.None,
                 0);
-
+            //BarBackgrounds
+            BarBackground[0].Draw(sB, new Vector2(40 - 30 / 2, ScreenSize.Y - 30 - 100 / 2));
+            BarBackground[1].Draw(sB, new Vector2(ScreenSize.X - 9 - 30 / 2, ScreenSize.Y - 30 - 100 / 2));
             //Health Bar
-            HealthBar.Draw(sB, new Vector2(35, ScreenSize.Y - 20), new Vector2(0, 0), MathHelper.ToRadians(180));
+            HealthBar.Draw(sB, new Vector2(39, ScreenSize.Y - 20), new Vector2(0, 0), MathHelper.ToRadians(180));
+            //Alt Bar
+            AltBar.Draw(sB, new Vector2(ScreenSize.X - 10, ScreenSize.Y - 20), new Vector2(0, 0), MathHelper.ToRadians(180));
+            if (AltBarAmount >= 100)
+            {
+                AltReadyTimer[0]++;
+                if (AltReadyTimer[0] <= 35)
+                {
+                    AltReadyInsSFX.Play();
+                    AltReadyTimer[1]++;
+                    if (AltReadyTimer[1] >= 3)
+                    {
+                        AltReady.Draw(sB, "R\nE\nA\nD\nY", new Vector2(ScreenSize.X - 25, ScreenSize.Y - 70), 0.3f, Color.DarkBlue);
+                        AltReadyTimer[1] = 0;
+                    }
+                }
+                else
+                    AltReadyTimer[0] = 36;
+            }
+            else 
+                AltReadyTimer[0] = 0;
 
             //Lives
             foreach (Lives life in _Lives)

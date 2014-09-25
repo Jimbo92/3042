@@ -40,7 +40,7 @@ namespace _3042
 
         public void Update(GameTime getGameTime)
         {
-            player.Update(getGameTime);
+            player.Update(getGameTime, gui);
 
             gui.Update(player);
 
@@ -133,6 +133,11 @@ namespace _3042
                         player.isAlive = false;
                         gui.PlayerHealth = 0;
                     }
+                }
+
+                if (CheckCollision.Collision(player.SecondaryFireRect, enemy.CollisionBox))
+                {
+                    enemy.Health = 0;
                 }
 
                 foreach (Bullet bullet in player.BulletList)

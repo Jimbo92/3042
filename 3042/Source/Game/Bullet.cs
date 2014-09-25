@@ -47,7 +47,7 @@ namespace _3042
             Content = getContent;
             sprite = new BasicSprite(getContent, getTexture, getWidth, getHeight);
             ExplosionAnim = new AnimSprite(Content, "graphics/BulletExplosionSS", getWidth, getHeight, 1, 8);
-            ShootAnim = new AnimSprite(Content, "graphics/ShootEffect1SS", getWidth, getHeight, 2, 1);
+            ShootAnim = new AnimSprite(Content, "graphics/ShootEffect1SS", getWidth * 2, getHeight, 2, 1);
 
         }
         public Bullet(ContentManager getContent, string getTexture, int getWidth, int getHeight, int getRows, int getColumns)
@@ -55,7 +55,7 @@ namespace _3042
             Content = getContent;
             SpriteAnim = new AnimSprite(Content, getTexture, getWidth, getHeight, getRows, getColumns);
             ExplosionAnim = new AnimSprite(Content, "graphics/BulletExplosionSS", getWidth, getHeight, 1, 8);
-            ShootAnim = new AnimSprite(Content, "graphics/ShootEffect1SS", getWidth, getHeight, 2, 1);
+            ShootAnim = new AnimSprite(Content, "graphics/ShootEffect1SS", getWidth * 2, getHeight, 2, 1);
 
         }
 
