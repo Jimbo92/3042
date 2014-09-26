@@ -34,7 +34,7 @@ namespace _3042
         };
         EMoveAnim _moveAnimation = EMoveAnim.STOP;
         public EControls _controls = EControls.MOUSE;
-        public EWeaponType _weaponType = EWeaponType.BASIC;
+        public EWeaponType _weaponType = EWeaponType.MAX;
 
         Texture2D CollisionBoxTexture;
 
@@ -90,7 +90,7 @@ namespace _3042
 
             BackBurnerEffect = new AnimSprite(getContent, "graphics/BackBurner2SS", 32, 32, 4, 1);
             ShieldEffect = new AnimSprite(getContent, "graphics/shieldss", Sprite.Width * 2, Sprite.Height * 2, 1, 8);
-            Cursor = new AnimSprite(getContent, "graphics/cursor", 64, 48, 1, 3);
+            Cursor = new AnimSprite(getContent, "graphics/cursor", 50, 35, 1, 3);
 
             PlayerShootSFX[0] = Content.Load<SoundEffect>("sound/playershoot2");
             PlayerShootSFX[1] = Content.Load<SoundEffect>("sound/playershoot3");
@@ -197,8 +197,6 @@ namespace _3042
                 case 0: PlayerShootSFXIns[0].Play(); break;
                 case 1: PlayerShootSFXIns[1].Play(); break;
             }
-
-
 
             switch (_weaponType)
             {
@@ -411,8 +409,6 @@ namespace _3042
                             SecondaryFireChargeUpAnim.Width = 164;
                         }
                     }
-
-
                 }
 
                 BackBurnerEffect.Draw(sB, new Vector2(Position.X, Position.Y + 22));
@@ -444,7 +440,7 @@ namespace _3042
             }
 
             if(_controls == EControls.MOUSE)
-                Cursor.Draw(sB, new Vector2(GotoPos.X - 8, GotoPos.Y));
+                Cursor.Draw(sB, new Vector2(GotoPos.X - 5, GotoPos.Y + 5));
         }
     }
 }

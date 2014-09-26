@@ -128,12 +128,12 @@ namespace _3042
                 SpriteEffects.None,
                 0);
             //BarBackgrounds
-            BarBackground[0].Draw(sB, new Vector2(40 - 30 / 2, ScreenSize.Y - 30 - 100 / 2));
-            BarBackground[1].Draw(sB, new Vector2(ScreenSize.X - 9 - 30 / 2, ScreenSize.Y - 30 - 100 / 2));
+            BarBackground[0].Draw(sB, new Vector2(40 - 30 / 2, ScreenSize.Y - 15 - 100 / 2));
+            BarBackground[1].Draw(sB, new Vector2(ScreenSize.X - 9 - 30 / 2, ScreenSize.Y - 15 - 100 / 2));
             //Health Bar
-            HealthBar.Draw(sB, new Vector2(39, ScreenSize.Y - 20), new Vector2(0, 0), MathHelper.ToRadians(180));
+            HealthBar.Draw(sB, new Vector2(39, ScreenSize.Y - 5), new Vector2(0, 0), MathHelper.ToRadians(180));
             //Alt Bar
-            AltBar.Draw(sB, new Vector2(ScreenSize.X - 10, ScreenSize.Y - 20), new Vector2(0, 0), MathHelper.ToRadians(180));
+            AltBar.Draw(sB, new Vector2(ScreenSize.X - 10, ScreenSize.Y - 5), new Vector2(0, 0), MathHelper.ToRadians(180));
             if (AltBarAmount >= 100)
             {
                 AltReadyTimer[0]++;
@@ -143,7 +143,7 @@ namespace _3042
                     AltReadyTimer[1]++;
                     if (AltReadyTimer[1] >= 3)
                     {
-                        AltReady.Draw(sB, "R\nE\nA\nD\nY", new Vector2(ScreenSize.X - 25, ScreenSize.Y - 70), 0.3f, Color.DarkBlue);
+                        AltReady.Draw(sB, "R\nE\nA\nD\nY", new Vector2(ScreenSize.X - 25, ScreenSize.Y - 55), 0.3f, Color.DarkBlue);
                         AltReadyTimer[1] = 0;
                     }
                 }
