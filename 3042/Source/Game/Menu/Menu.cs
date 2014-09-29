@@ -31,6 +31,7 @@ namespace _3042
             for (int i = 0; i < 3; i++)
             {
                 Buttons[i] = new MenuButton(Content, 164, 32);
+
             }
         }
 
