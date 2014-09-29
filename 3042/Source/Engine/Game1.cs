@@ -27,6 +27,9 @@ namespace _3042
         //Menu
         Menu MainMenu;
 
+        //Options
+        Options OptionsMenu;
+
         //Level1
         Level1 _level1;
 
@@ -62,12 +65,14 @@ namespace _3042
             //Menu
             MainMenu = new Menu(Content, ScreenSize);
 
+            //Options
+            OptionsMenu = new Options(Content, ScreenSize);
+
             //Music
             BackgroundMusicSong = Content.Load<SoundEffect>("sound/Backgroundmusic");
-            BackgroundMusicSongIns = BackgroundMusicSong.CreateInstance();
-            BackgroundMusicSongIns.Volume = 0.1f;
+            GameMode.UniversalMusic = BackgroundMusicSongIns = BackgroundMusicSong.CreateInstance();
             BackgroundMusicSongIns.IsLooped = true;
-            BackgroundMusicSongIns.Play();
+            BackgroundMusicSongIns.Volume = 0.3f;
 
             _level1 = new Level1(Content, ScreenSize);
 
@@ -76,28 +81,30 @@ namespace _3042
         protected override void Update(GameTime gameTime)
         {
             Input.Begin();
-            if (Input.KeyboardReleased(Keys.Escape))
-                Exit();
             //Code Bellow this
+
+            if (GameMode.UniMusic == GameMode.EUniMusic.Mute)
+                BackgroundMusicSongIns.Stop();
+            else if (GameMode.UniMusic == GameMode.EUniMusic.Unmute)
+                BackgroundMusicSongIns.Play();
 
             switch (GameMode.Mode)
             {
                 case GameMode.EGameMode.LEVELSELECT:
                     {
-                        BackgroundMusicSongIns.Volume = 0.03f;
+                        BackgroundMusicSongIns.Stop();
                         IsMouseVisible = false;
                         _level1.Update(gameTime);
                     }; break;
                 case GameMode.EGameMode.MENU:
                     {
-                        BackgroundMusicSongIns.Volume = 0.1f;
                         IsMouseVisible = true;
                         MainMenu.Update(this);
                     }; break;
                 case GameMode.EGameMode.OPTIONS:
                     {
                         IsMouseVisible = true;
-                        //MainMenu.Update(this);
+                        OptionsMenu.Update();
                     }; break;
             }
 
@@ -116,7 +123,7 @@ namespace _3042
             {
                 case GameMode.EGameMode.LEVELSELECT: _level1.Draw(spriteBatch); break;
                 case GameMode.EGameMode.MENU: MainMenu.Draw(spriteBatch); break;
-                case GameMode.EGameMode.OPTIONS: ; break;
+                case GameMode.EGameMode.OPTIONS: OptionsMenu.Draw(spriteBatch); break;
             }
 
             //Code Above this

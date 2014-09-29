@@ -110,13 +110,15 @@ namespace _3042
             }
 
             if (Position.Y >= 800 || Position.Y <= -100 || Position.X >= 800 || Position.X <= -100)
+            {
                 isRemoved = true;
-
+                isAlive = false;
+            }
         }
 
         public void Draw(SpriteBatch sB)
         {
-            if (isAlive || isRemoved)
+            if (isAlive)
             {
                 if (isWarpIn)
                 {
@@ -146,24 +148,30 @@ namespace _3042
                 if (DebugMode)
                     sB.Draw(CollisionBoxTexture, CollisionBox, Color.White);
             }
-            if (!isAlive)
+            else
             {
-                CollisionBox = Rectangle.Empty;
+                CollisionBox.X = -100;
+                CollisionBox.Y = -100;
+                CollisionBox.Width = 0;
+                CollisionBox.Height = 0;
 
-                if (!ExplosionAnim.AnimationFinnished)
-                    isExplosion = true;
-                else
-                    isExplosion = false;
-
-                if (isExplosion)
+                if (!isRemoved)
                 {
-                    ExplosionSFXIns.Play();
-                    Speed = 1f;
-                    ExplosionAnim.UpdateAnimation(0.5f);
-                    ExplosionAnim.Draw(sB, Position);
-                    ShockWaveAnim.UpdateAnimation(0.5f);
-                    ShockWaveAnim.Draw(sB, Position);
-                    DisplayScore.Draw(sB, Score.ToString(), Position, .5f, Color.White);
+                    if (!ExplosionAnim.AnimationFinnished)
+                        isExplosion = true;
+                    else
+                        isExplosion = false;
+
+                    if (isExplosion)
+                    {
+                        ExplosionSFXIns.Play();
+                        Speed = 1f;
+                        ExplosionAnim.UpdateAnimation(0.5f);
+                        ExplosionAnim.Draw(sB, Position);
+                        ShockWaveAnim.UpdateAnimation(0.5f);
+                        ShockWaveAnim.Draw(sB, Position);
+                        DisplayScore.Draw(sB, Score.ToString(), Position, .5f, Color.White);
+                    }
                 }
 
             }

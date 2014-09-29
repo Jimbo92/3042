@@ -21,15 +21,21 @@ namespace _3042
         //Varibles
         public Player player;
         public List<Enemy> EnemyList = new List<Enemy>();
+        public List<BasicItem> WepUpList = new List<BasicItem>();
+        public List<BasicItem> OneUpList = new List<BasicItem>();
         public GUI gui;
 
         private int AsteroidTimer;
         private int SmallEnemyTimer;
+        private int RandItemDropNum;
+        private Random RandItemDrop;
+        private int ItemNextDropTimer;
 
         public Level_Base(ContentManager getContent, Rectangle getScreenSize)
         {
             //Misc
             Content = getContent;
+            RandItemDrop = new Random();
 
             gui = new GUI(getContent, getScreenSize);
 
@@ -40,6 +46,9 @@ namespace _3042
 
         public void Update(GameTime getGameTime)
         {
+            if (Input.KeyboardPressed(Keys.Escape))
+                GameMode.Mode = GameMode.EGameMode.MENU;
+
             player.Update(getGameTime, gui);
 
             gui.Update(player);
@@ -52,6 +61,21 @@ namespace _3042
             }
 
             CollisionDetection();
+
+            ItemNextDropTimer++;
+        }
+
+        public void WeaponUpgradeItem(Vector2 getPosition)
+        {
+            BasicItem WepUp = new BasicItem(Content, "graphics/wepupss", 48, 32, 1, 6);
+            WepUp.Position = getPosition;
+            WepUpList.Add(WepUp);
+        }
+        public void LifeItem(Vector2 getPosition)
+        {
+            BasicItem OneUp = new BasicItem(Content, "graphics/oneupss", 48, 32, 1, 6);
+            OneUp.Position = getPosition;
+            OneUpList.Add(OneUp);
         }
 
         public void SmallEnemyWave(int getDelay, Vector2 getPos, Vector2 getDir1, float getSpeed)
@@ -146,7 +170,47 @@ namespace _3042
                     {
                         enemy.Health -= bullet.Damage;
                         bullet.isAlive = false;
+
+                        if (enemy.Health <= 0 && ItemNextDropTimer >= 500)
+                        {
+                            RandItemDropNum = RandItemDrop.Next(25);
+
+                            if (RandItemDropNum == 1)
+                            {
+                                ItemNextDropTimer = 0;
+                                WeaponUpgradeItem(enemy.Position);
+                            }
+                            if (RandItemDropNum == 3)
+                            {
+                                ItemNextDropTimer = 0;
+                                LifeItem(enemy.Position);
+                            }
+                        }
                     }
+                }
+            }
+            foreach (BasicItem OneUp in OneUpList)
+            {
+                if (CheckCollision.Collision(player.CollisionBox, OneUp.CollisionBox))
+                {
+                    OneUp.isAlive = false;
+                    if (gui.PlayerLives != 3)
+                    {
+                        gui.PlayerLives++;
+                    }
+                }
+            }
+
+            foreach (BasicItem WepUp in WepUpList)
+            {
+                if (CheckCollision.Collision(player.CollisionBox, WepUp.CollisionBox))
+                {
+                    WepUp.isAlive = false;
+
+                    if (player._weaponType == Player.EWeaponType.BASIC)
+                        player._weaponType = Player.EWeaponType.ADVANCED;
+                    else if (player._weaponType == Player.EWeaponType.ADVANCED)
+                        player._weaponType = Player.EWeaponType.MAX;
                 }
             }
         }
@@ -156,7 +220,6 @@ namespace _3042
             _BackGround.Draw(sB);
             //Draw Background first
 
-
             foreach (Enemy enemy in EnemyList)
             {
                 enemy.Draw(sB);
@@ -164,7 +227,14 @@ namespace _3042
 
             player.Draw(sB);
 
-
+            foreach (BasicItem WepUp in WepUpList)
+            {
+                WepUp.Draw(sB);
+            }
+            foreach (BasicItem OneUp in OneUpList)
+            {
+                OneUp.Draw(sB);
+            }
             //Draw GUI last
             gui.Draw(sB);
         }

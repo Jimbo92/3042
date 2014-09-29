@@ -15,19 +15,18 @@ namespace _3042
     class Lives
     {
         public BasicSprite Sprite;
-        public Vector2 Position;
         public bool isAlive = true;
 
 
-        public void LoadContent(ContentManager getContent)
+        public Lives(ContentManager getContent)
         {
-            Sprite = new BasicSprite(getContent, "graphics/life", 28, 39);
+            Sprite = new BasicSprite(getContent, "graphics/life", 24, 24);
         }
 
-        public void Draw(SpriteBatch sB)
+        public void Draw(SpriteBatch sB, Vector2 getPosition)
         {
             if (isAlive)
-            Sprite.Draw(sB, Position);
+                Sprite.Draw(sB, getPosition);
         }
     }
 }

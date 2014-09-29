@@ -107,7 +107,10 @@ namespace _3042
             }           
             else
             {
-                CollisionBox = Rectangle.Empty;
+                CollisionBox.X = -100;
+                CollisionBox.Y = -100;
+                CollisionBox.Width = 0;
+                CollisionBox.Height = 0;
 
                 if (!ExplosionAnim.AnimationFinnished)
                     isExplosion = true;

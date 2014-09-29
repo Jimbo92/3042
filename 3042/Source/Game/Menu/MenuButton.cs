@@ -17,7 +17,6 @@ namespace _3042
         public AnimSprite SpriteAnim;
         public Rectangle MousePos;
         public Rectangle CollisionBox;
-        public bool isReleased = false;
 
         private Font ButtonText;
         private SoundEffect[] ButtonSounds = new SoundEffect[2];
@@ -66,11 +65,6 @@ namespace _3042
                     SFXTimer[1] = 0;
                     SpriteAnim.currentFrame = 1;
                 }
-
-                if (Input.ClickReleased(Input.EClicks.LEFT))
-                    isReleased = true;
-                else
-                    isReleased = false;
             }
             else
             {

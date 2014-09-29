@@ -21,5 +21,21 @@ namespace _3042
             OPTIONS
         }
         static public EGameMode Mode = EGameMode.MENU;
+
+        public enum EControls
+        {
+            Keyboard,
+            Mouse
+        }
+        static public EControls Controls = EControls.Mouse;
+
+        public enum EUniMusic
+        {
+            Mute,
+            Unmute
+        }
+        static public EUniMusic UniMusic = EUniMusic.Unmute;
+
+        static public SoundEffectInstance UniversalMusic;
     }
 }

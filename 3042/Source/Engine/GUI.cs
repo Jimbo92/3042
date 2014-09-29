@@ -14,14 +14,16 @@ namespace _3042
 {
     class GUI
     {
-        public SpriteFont FontRegular;
+        public Font ScoreFont;
+        public Font HealthFont;
+        public Font WepLvlFont;
         public int Score;
-        public List<Lives> _Lives = new List<Lives>();
+        public Lives[] _Lives = new Lives[3];
         public int PlayerLives = 3;
         public bool ResetLives = false;
         public float PlayerHealth = 100;
         public float AltBarAmount = 100;
-
+        public string WepLvl;
 
         private Rectangle ScreenSize;
         private ContentManager Content;
@@ -39,7 +41,9 @@ namespace _3042
             ScreenSize = getScreenSize;
             Content = getContent;
 
-            FontRegular = getContent.Load<SpriteFont>("fonts/font_regular");
+            ScoreFont = new Font(getContent);
+            HealthFont = new Font(getContent);
+            WepLvlFont = new Font(getContent);
 
             //Health Bar
             HealthBar = new BasicSprite(getContent, "graphics/healthbar", 30, (int)PlayerHealth);
@@ -53,10 +57,11 @@ namespace _3042
             for (int i = 0; i < 2; i++)
                 BarBackground[i] = new BasicSprite(Content, "graphics/barbackground", HealthBar.Width + 10, HealthBar.Height + 10);
 
-            //Lives
-            AddLives(new Vector2(130, ScreenSize.Y - 80));
-            AddLives(new Vector2(90, ScreenSize.Y - 80));
-            AddLives(new Vector2(50, ScreenSize.Y - 80));
+            for (int i = 0; i < 3; i++)
+            {
+                _Lives[i] = new Lives(getContent);
+            }
+
         }
 
         public void Update(Player getPlayer)
@@ -86,52 +91,27 @@ namespace _3042
             {
                 player.isReset = true;
                 player.ImmuneTimer = 0;
-
+                player._weaponType = Player.EWeaponType.BASIC;
                 PlayerLives--;
-                _Lives.RemoveAt(0);
                 PlayerHealth = 100;
             }
-            if (PlayerLives <= 0)
+
+            if (PlayerLives <= 0 || PlayerLives >= 4)
             {
-                ResetLives = true;
                 PlayerLives = 3;
             }
-            else
-                ResetLives = false;
-
-            if (ResetLives)
-            {
-                AddLives(new Vector2(130, ScreenSize.Y - 80));
-                AddLives(new Vector2(90, ScreenSize.Y - 80));
-                AddLives(new Vector2(50, ScreenSize.Y - 80));
-            }
-        }
-        private void AddLives(Vector2 getPosition)
-        {
-            Lives life = new Lives();
-            life.LoadContent(Content);
-            life.Position = getPosition;
-
-            _Lives.Add(life);
         }
 
         public void Draw(SpriteBatch sB)
         {
             //Score
-            sB.DrawString(FontRegular,
-                "Score " + Score.ToString(),
-                new Vector2(50, ScreenSize.Y - 50),
-                Color.White,
-                0,
-                new Vector2(),
-                0.5f,
-                SpriteEffects.None,
-                0);
+            ScoreFont.Draw(sB, "Score " + Score.ToString(), new Vector2(ScreenSize.X / 2, 25), 0.5f, Color.White);
             //BarBackgrounds
             BarBackground[0].Draw(sB, new Vector2(40 - 30 / 2, ScreenSize.Y - 15 - 100 / 2));
             BarBackground[1].Draw(sB, new Vector2(ScreenSize.X - 9 - 30 / 2, ScreenSize.Y - 15 - 100 / 2));
             //Health Bar
             HealthBar.Draw(sB, new Vector2(39, ScreenSize.Y - 5), new Vector2(0, 0), MathHelper.ToRadians(180));
+            HealthFont.Draw(sB, "HP", new Vector2(25, ScreenSize.Y - 20), 0.3f, Color.White);
             //Alt Bar
             AltBar.Draw(sB, new Vector2(ScreenSize.X - 10, ScreenSize.Y - 5), new Vector2(0, 0), MathHelper.ToRadians(180));
             if (AltBarAmount >= 100)
@@ -152,12 +132,16 @@ namespace _3042
             }
             else 
                 AltReadyTimer[0] = 0;
+            //Weapon Level Font
+            WepLvlFont.Draw(sB, "Weapon\n" + WepLvl, new Vector2(ScreenSize.X - 85, ScreenSize.Y - 25), 0.3f, Color.White);
 
             //Lives
-            foreach (Lives life in _Lives)
-            {
-                life.Draw(sB);
-            }
+            if (PlayerLives >= 1)
+            _Lives[0].Draw(sB, new Vector2(50, ScreenSize.Y - 40));
+            if (PlayerLives >= 2)
+            _Lives[1].Draw(sB, new Vector2(50, ScreenSize.Y - 70));
+            if (PlayerLives >= 3)
+            _Lives[2].Draw(sB, new Vector2(50, ScreenSize.Y - 100));
         }
 
 

@@ -15,11 +15,6 @@ namespace _3042
     class Player
     {
         //Enums
-        public enum EControls
-        {
-            MOUSE,
-            KEYBOARD
-        };
         enum EMoveAnim
         {
             STOP,
@@ -33,8 +28,7 @@ namespace _3042
             MAX
         };
         EMoveAnim _moveAnimation = EMoveAnim.STOP;
-        public EControls _controls = EControls.MOUSE;
-        public EWeaponType _weaponType = EWeaponType.MAX;
+        public EWeaponType _weaponType = EWeaponType.BASIC;
 
         Texture2D CollisionBoxTexture;
 
@@ -123,11 +117,19 @@ namespace _3042
                 if (ControlsEnabled)
                 {
                     Weapon();
-                    switch (_controls)
+                    switch (GameMode.Controls)
                     {
-                        case EControls.KEYBOARD: KeyboardControls(); break;
-                        case EControls.MOUSE: MouseControls(); break;
+                        case GameMode.EControls.Keyboard: KeyboardControls(); break;
+                        case GameMode.EControls.Mouse: MouseControls(); break;
                     }
+                }
+
+                //Weapon Level Text
+                switch (_weaponType)
+                {
+                    case EWeaponType.BASIC:     gui.WepLvl = "Basic"; break;
+                    case EWeaponType.ADVANCED:  gui.WepLvl = "Adv"; break;
+                    case EWeaponType.MAX:       gui.WepLvl = "Max"; break;
                 }
 
                 //Player Movement
@@ -151,12 +153,12 @@ namespace _3042
 
         private void Weapon()
         {
-            if (Input.KeyboardPressed(Keys.RightControl) && _controls == EControls.KEYBOARD ||
-                Input.ClickPressed(Input.EClicks.LEFT) && _controls == EControls.MOUSE)
+            if (Input.KeyboardPressed(Keys.RightControl) && GameMode.Controls == GameMode.EControls.Keyboard ||
+                Input.ClickPressed(Input.EClicks.LEFT) && GameMode.Controls == GameMode.EControls.Mouse)
                 Shoot();
 
-            if (Input.KeyboardPress(Keys.RightControl) && _controls == EControls.KEYBOARD ||
-                Input.ClickPress(Input.EClicks.LEFT) && _controls == EControls.MOUSE)
+            if (Input.KeyboardPress(Keys.RightControl) && GameMode.Controls == GameMode.EControls.Keyboard ||
+                Input.ClickPress(Input.EClicks.LEFT) && GameMode.Controls == GameMode.EControls.Mouse)
             {
                 ShootTimer++;
                 if (ShootTimer >= 10)
@@ -168,8 +170,8 @@ namespace _3042
             else
                 ShootTimer = 0;
 
-            if (Input.KeyboardPressed(Keys.RightAlt) && _controls == EControls.KEYBOARD ||
-                Input.ClickPressed(Input.EClicks.RIGHT) && _controls == EControls.MOUSE)
+            if (Input.KeyboardPressed(Keys.RightAlt) && GameMode.Controls == GameMode.EControls.Keyboard ||
+                Input.ClickPressed(Input.EClicks.RIGHT) && GameMode.Controls == GameMode.EControls.Mouse)
                 if (isAltFire)
                 SecondaryFireShot = true;
 
@@ -200,7 +202,10 @@ namespace _3042
 
             switch (_weaponType)
             {
-                case EWeaponType.BASIC: ShootBasic(); break;
+                case EWeaponType.BASIC:
+                    {
+                        ShootBasic();
+                    }; break;
                 case EWeaponType.ADVANCED:
                     {
                         ShootBasic();
@@ -439,7 +444,7 @@ namespace _3042
                 }
             }
 
-            if(_controls == EControls.MOUSE)
+            if (GameMode.Controls == GameMode.EControls.Mouse)
                 Cursor.Draw(sB, new Vector2(GotoPos.X - 5, GotoPos.Y + 5));
         }
     }

@@ -18,7 +18,7 @@ namespace _3042
 
         private ContentManager Content;
         private Rectangle ScreenSize;
-        private BasicSprite BackgroundImage;
+        private BasicSprite MenuBackgroundImage;
         private Font Title;
 
         public Menu(ContentManager getContent, Rectangle getScreenSize)
@@ -27,8 +27,7 @@ namespace _3042
             ScreenSize = getScreenSize;
 
             Title = new Font(getContent);
-            BackgroundImage = new BasicSprite(getContent, "graphics/menubackground", ScreenSize.Width, ScreenSize.Height);
-
+            MenuBackgroundImage = new BasicSprite(getContent, "graphics/menubackground", ScreenSize.Width, ScreenSize.Height);
             for (int i = 0; i < 3; i++)
             {
                 Buttons[i] = new MenuButton(Content, 164, 32);
@@ -43,23 +42,27 @@ namespace _3042
             }
 
             //Buttons
-            if (Buttons[0].isReleased)
-                GameMode.Mode = GameMode.EGameMode.LEVELSELECT;
-            if (Buttons[1].isReleased)
-                GameMode.Mode = GameMode.EGameMode.OPTIONS;
-            if (Buttons[2].isReleased)
-                getGame1.Exit();
+            if (CheckCollision.Collision(Buttons[0].MousePos, Buttons[0].CollisionBox))
+                if (Input.ClickReleased(Input.EClicks.LEFT))
+                    GameMode.Mode = GameMode.EGameMode.LEVELSELECT;
+            if (CheckCollision.Collision(Buttons[1].MousePos, Buttons[1].CollisionBox))
+                if (Input.ClickReleased(Input.EClicks.LEFT))
+                    GameMode.Mode = GameMode.EGameMode.OPTIONS;
+            if (CheckCollision.Collision(Buttons[2].MousePos, Buttons[2].CollisionBox))
+                if (Input.ClickReleased(Input.EClicks.LEFT))
+                    getGame1.Exit();
+
         }
 
         public void Draw(SpriteBatch sB)
         {
-            BackgroundImage.Draw(sB, new Vector2(ScreenSize.X / 2, ScreenSize.Y / 2));
+            MenuBackgroundImage.Draw(sB, new Vector2(ScreenSize.X / 2, ScreenSize.Y / 2));
             Title.Draw(sB, "3042", new Vector2(ScreenSize.X / 4, ScreenSize.Y / 2), 2f, Color.White);
 
             //Draw Buttons Last
             Buttons[0].Draw(sB, "Play", 0.5f, new Vector2(ScreenSize.X / 5, ScreenSize.Y - 250));
             Buttons[1].Draw(sB, "Options", 0.5f, new Vector2(ScreenSize.X / 5, ScreenSize.Y - 200));
-            Buttons[2].Draw(sB, "Quit", 0.5f, new Vector2(ScreenSize.X / 5, ScreenSize.Y - 150));     
+            Buttons[2].Draw(sB, "Quit", 0.5f, new Vector2(ScreenSize.X / 5, ScreenSize.Y - 150));
         }
 
     }
