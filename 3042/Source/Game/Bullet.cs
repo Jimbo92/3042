@@ -27,6 +27,7 @@ namespace _3042
         public float Speed;
         public Rectangle CollisionBox;
         public bool isAlive = true;
+        public bool isRemoved = false;
         public bool DebugMode = false;
         public float Delay;
         public Vector2 FirePosition;
@@ -68,8 +69,11 @@ namespace _3042
 
             Position += Direction * Speed;
 
-            if (Position.Y >= 800 || Position.Y <= -100)
+            if (Position.Y >= 800 || Position.Y <= -100 || GameMode.Mode == GameMode.EGameMode.GAMEOVER || GameMode.Mode == GameMode.EGameMode.MENU)
+            {
+                isRemoved = true;
                 isAlive = false;
+            }
         }
 
         public void Draw(SpriteBatch sB)
@@ -112,16 +116,19 @@ namespace _3042
                 CollisionBox.Width = 0;
                 CollisionBox.Height = 0;
 
-                if (!ExplosionAnim.AnimationFinnished)
-                    isExplosion = true;
-                else
-                    isExplosion = false;
-
-                if (isExplosion)
+                if (!isRemoved)
                 {
-                    Speed = 1f;
-                    ExplosionAnim.UpdateAnimation(0.6f);
-                    ExplosionAnim.Draw(sB, Position);
+                    if (!ExplosionAnim.AnimationFinnished)
+                        isExplosion = true;
+                    else
+                        isExplosion = false;
+
+                    if (isExplosion)
+                    {
+                        Speed = 1f;
+                        ExplosionAnim.UpdateAnimation(0.6f);
+                        ExplosionAnim.Draw(sB, Position);
+                    }
                 }
             }
         }

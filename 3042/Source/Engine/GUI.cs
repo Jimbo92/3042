@@ -69,6 +69,19 @@ namespace _3042
             player = getPlayer;
 
             HealthAndAlt();
+
+            if (GameMode.Mode == GameMode.EGameMode.GAMEOVER || GameMode.Mode == GameMode.EGameMode.MENU)
+                Reset();
+        }
+
+        private void Reset()
+        {
+            Score = 0;
+            PlayerLives = 3;
+            player.isReset = true;
+            player.ImmuneTimer = 0;
+            player._weaponType = Player.EWeaponType.BASIC;
+            PlayerHealth = 100;
         }
 
         private void HealthAndAlt()
@@ -96,10 +109,11 @@ namespace _3042
                 PlayerHealth = 100;
             }
 
-            if (PlayerLives <= 0 || PlayerLives >= 4)
-            {
+            if (PlayerLives >= 4)
                 PlayerLives = 3;
-            }
+
+            if (PlayerLives <= 0)
+                GameMode.Mode = GameMode.EGameMode.GAMEOVER;
         }
 
         public void Draw(SpriteBatch sB)

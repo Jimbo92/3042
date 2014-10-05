@@ -36,9 +36,7 @@ namespace _3042
         public void Update()
         {
             for (int i = 0; i < 3; i++)
-            {
                 Buttons[i].Update();
-            }
 
             //Buttons
             if (CheckCollision.Collision(Buttons[0].MousePos, Buttons[0].CollisionBox))

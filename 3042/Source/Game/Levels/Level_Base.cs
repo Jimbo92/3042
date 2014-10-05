@@ -25,11 +25,11 @@ namespace _3042
         public List<BasicItem> OneUpList = new List<BasicItem>();
         public GUI gui;
 
-        private int AsteroidTimer;
-        private int SmallEnemyTimer;
+        private int[] SpawnTimer = new int[8];
         private int RandItemDropNum;
         private Random RandItemDrop;
         private int ItemNextDropTimer;
+        private Rectangle ScreenSize;
 
         public Level_Base(ContentManager getContent, Rectangle getScreenSize)
         {
@@ -44,10 +44,12 @@ namespace _3042
             _BackGround = new Background(getContent);
         }
 
-        public void Update(GameTime getGameTime)
+        public void Update(GameTime getGameTime, Rectangle getScreenSize)
         {
             if (Input.KeyboardPressed(Keys.Escape))
                 GameMode.Mode = GameMode.EGameMode.MENU;
+
+            ScreenSize = getScreenSize;
 
             player.Update(getGameTime, gui);
 
@@ -57,7 +59,7 @@ namespace _3042
 
             foreach (Enemy enemy in EnemyList)
             {
-                enemy.Update(gui);
+                enemy.Update(gui, getScreenSize);
             }
 
             CollisionDetection();
@@ -78,19 +80,6 @@ namespace _3042
             OneUpList.Add(OneUp);
         }
 
-        public void SmallEnemyWave(int getDelay, Vector2 getPos, Vector2 getDir1, float getSpeed)
-        {
-
-            SmallEnemyTimer++;
-            if (SmallEnemyTimer >= getDelay)
-            {
-                SpawnEnemy("graphics/enemysmall", 50, 48, 48,
-                    getPos, getDir1, getSpeed, 100, true);
-
-                SmallEnemyTimer = 0;
-            }
-        }
-
         public void RandAsteroidWave(int getDelay)
         {
             Random RandSize = new Random();
@@ -98,26 +87,25 @@ namespace _3042
             Random RandEndXPos = new Random();
             Random RandSpeed = new Random();
 
-            AsteroidTimer++;
-            if (AsteroidTimer >= getDelay)
+            SpawnTimer[0]++;
+            if (SpawnTimer[0] >= getDelay)
             {
                 int RandSizeNum = RandSize.Next(35, 90);
                 int RandStartXPosNum = RandSize.Next(20, 680);
                 int RandEndXPosNum = RandSize.Next(20, 680);
                 int RandSpeedNum = RandSize.Next(5, 10);
 
-                SpawnEnemy("graphics/asteroidss", RandSizeNum, RandSizeNum, RandSizeNum, 30, 1,
+                Asteroid(RandSizeNum / 2, RandSizeNum, RandSizeNum,
                     new Vector2(RandStartXPosNum, -100), new Vector2(RandEndXPosNum, 800),
-                    RandSpeedNum / 2, 0.3f, RandSizeNum, false);
+                    RandSpeedNum / 2, RandSizeNum);
 
-                AsteroidTimer = 0;
+                SpawnTimer[0] = 0;
             }
         }
-
-        private void SpawnEnemy(string getTexture, float getHealth, int getWidth, int getHeight, int geRows, int getColumns, Vector2 getPos, Vector2 getDir, float getSpeed, float getDelay, int getScore, bool getWarpIn)
+        private void Asteroid(float getHealth, int getWidth, int getHeight, Vector2 getPos, Vector2 getDir, float getSpeed, int getScore)
         {
-            Enemy enemy = new Enemy(Content, getTexture, getWidth, getHeight, geRows, getColumns);
-            enemy.Delay = getDelay;
+            Enemy enemy = new Enemy(Content, "graphics/asteroidss", getWidth, getHeight, 30, 1);
+            enemy.Delay = 0.3f;
             enemy._spriteType = Enemy.ESpriteType.ANIM;
             enemy.Position = getPos;
             enemy.Direction = getDir - enemy.Position;
@@ -126,21 +114,97 @@ namespace _3042
             enemy.MaxHealth = getHealth;
             enemy.Health = enemy.MaxHealth;
             enemy.Score = getScore;
-            enemy.isWarpIn = getWarpIn;
+            enemy.EnemyType = Enemy.EEnemyType.Asteroid;
             EnemyList.Add(enemy);
         }
-        private void SpawnEnemy(string getTexture, float getHealth, int getWidth, int getHeight, Vector2 getPos, Vector2 getDir, float getSpeed, int getScore, bool getWarpIn)
+
+        public void SmallEnemyCurvLeftWave(int getDelay)
+        {
+            SpawnTimer[1]++;
+            if (SpawnTimer[1] >= getDelay)
+            {
+                SpawnEnemyCurvLeft("graphics/enemysmall", 25, 48, 48, 100);
+                SpawnTimer[1] = 0;
+            }
+        }
+        private void SpawnEnemyCurvLeft(string getTexture, float getHealth, int getWidth, int getHeight, int getScore)
         {
             Enemy enemy = new Enemy(Content, getTexture, getWidth, getHeight);
-            enemy.isWarpIn = getWarpIn;
             enemy._spriteType = Enemy.ESpriteType.BASIC;
-            enemy.Position = getPos;
-            enemy.Direction = getDir - enemy.Position;
-            enemy.Direction.Normalize();
-            enemy.Speed = getSpeed;
+            enemy.EnemyType = Enemy.EEnemyType.Warp_CurvLeft;
+            enemy.Position = new Vector2(ScreenSize.X - 50, 50);
+            enemy.GotoPos = enemy.Position;
             enemy.MaxHealth = getHealth;
             enemy.Health = enemy.MaxHealth;
             enemy.Score = getScore;
+            enemy.WeaponDamage = 10;
+            enemy.BulletDirection = new Vector2(enemy.Position.X, 800) - enemy.Position;
+
+            Random RandWep = new Random();
+            int RandWepNum = RandWep.Next(3);
+            if (RandWepNum == 0) 
+                enemy.HasWeapon = true;
+
+            EnemyList.Add(enemy);
+        }
+
+        public void SmallEnemyCurvRightWave(int getDelay)
+        {
+            SpawnTimer[2]++;
+            if (SpawnTimer[2] >= getDelay)
+            {
+                SpawnEnemyCurvRight("graphics/enemysmall", 25, 48, 48, 100);
+                SpawnTimer[2] = 0;
+            }
+        }
+        private void SpawnEnemyCurvRight(string getTexture, float getHealth, int getWidth, int getHeight, int getScore)
+        {
+            Enemy enemy = new Enemy(Content, getTexture, getWidth, getHeight);
+            enemy._spriteType = Enemy.ESpriteType.BASIC;
+            enemy.EnemyType = Enemy.EEnemyType.Warp_CurvRight;
+            enemy.Position = new Vector2(50, 50);
+            enemy.GotoPos = enemy.Position;
+            enemy.MaxHealth = getHealth;
+            enemy.Health = enemy.MaxHealth;
+            enemy.Score = getScore;
+            enemy.WeaponDamage = 10;
+            enemy.BulletDirection = new Vector2(enemy.Position.X, 800) - enemy.Position;
+
+            Random RandWep = new Random();
+            int RandWepNum = RandWep.Next(3);
+            if (RandWepNum == 0)
+                enemy.HasWeapon = true;
+
+            EnemyList.Add(enemy);
+        }
+
+        public void SmallEnemyCurvUpLeftWave(int getDelay)
+        {
+            SpawnTimer[3]++;
+            if (SpawnTimer[3] >= getDelay)
+            {
+                SpawnEnemyCurvUpLeftWave("graphics/enemysmall", 25, 48, 48, 100);
+                SpawnTimer[3] = 0;
+            }
+        }
+        private void SpawnEnemyCurvUpLeftWave(string getTexture, float getHealth, int getWidth, int getHeight, int getScore)
+        {
+            Enemy enemy = new Enemy(Content, getTexture, getWidth, getHeight);
+            enemy._spriteType = Enemy.ESpriteType.BASIC;
+            enemy.EnemyType = Enemy.EEnemyType.Warp_CurvUpLeft;
+            enemy.Position = new Vector2(500, 400);
+            enemy.GotoPos = enemy.Position;
+            enemy.MaxHealth = getHealth;
+            enemy.Health = enemy.MaxHealth;
+            enemy.Score = getScore;
+            enemy.WeaponDamage = 10;
+            enemy.BulletDirection = new Vector2(enemy.Position.X, 800) - enemy.Position;
+
+            Random RandWep = new Random();
+            int RandWepNum = RandWep.Next(3);
+            if (RandWepNum == 0)
+                enemy.HasWeapon = true;
+
             EnemyList.Add(enemy);
         }
 
@@ -162,6 +226,16 @@ namespace _3042
                 if (CheckCollision.Collision(player.SecondaryFireRect, enemy.CollisionBox))
                 {
                     enemy.Health = 0;
+                }
+                foreach (Bullet bullet in enemy.BulletList)
+                {
+                    if (CheckCollision.Collision(player.CollisionBox, bullet.CollisionBox))
+                    {
+                        if (!player.isImmune)
+                            gui.PlayerHealth -= bullet.Damage;
+
+                        bullet.isAlive = false;
+                    }
                 }
 
                 foreach (Bullet bullet in player.BulletList)

@@ -134,7 +134,7 @@ namespace _3042
 
                 //Player Movement
                 Direction = GotoPos - Position;
-                Speed = Direction.Length() * 0.1f;
+                Speed = Direction.Length() * 0.13f;
                 Direction.Normalize();
                 Position += Direction * Speed;
 
@@ -285,21 +285,23 @@ namespace _3042
         {
 
             if (Input.KeyboardPress(Keys.Left))
-            {
                 GotoPos.X -= 10;
-            }
-             if (Input.KeyboardPress(Keys.Right))
-            {
+            else if (Input.KeyboardPress(Keys.Right))
                 GotoPos.X += 10;
-            }
-             if (Input.KeyboardPress(Keys.Up))
-            {
+            if (Input.KeyboardPress(Keys.Up))
                 GotoPos.Y -= 10;
-            }
-             if (Input.KeyboardPress(Keys.Down))
-            {
-                GotoPos.Y += 5;
-            }
+            else if (Input.KeyboardPress(Keys.Down))
+                GotoPos.Y += 10;
+
+            //Check if outside viewport
+             if (GotoPos.X <= 0)
+                 GotoPos.X += 10;
+             if (GotoPos.X >= ScreenSize.X)
+                 GotoPos.X -= 10;
+             if (GotoPos.Y <= 0)
+                 GotoPos.Y += 10;
+             if (GotoPos.Y >= ScreenSize.Y)
+                 GotoPos.Y -= 10;
 
              if (Input.KeyboardPress(Keys.Left))
                  _moveAnimation = EMoveAnim.LEFT;
@@ -367,6 +369,8 @@ namespace _3042
 
         private void Reset()
         {
+            Position = new Vector2(ScreenSize.X / 2, ScreenSize.Y - 100);
+            GotoPos = new Vector2(ScreenSize.X / 2, ScreenSize.Y - 101);
             isAlive = true;
             isImmune = true;
             ControlsEnabled = true;
@@ -406,7 +410,7 @@ namespace _3042
                         }
                         else
                         {
-                            SecondaryFireRect = Rectangle.Empty;
+                            SecondaryFireRect = new Rectangle(-100, -100, 0, 0);
                             SecondaryFireShot = false;
                             SecondaryFireAnim.AnimationFinnished = false;
                             SecondaryFireChargeUpAnim.AnimationFinnished = false;
@@ -437,10 +441,10 @@ namespace _3042
             }
             else
             {
-                CollisionBox = Rectangle.Empty;
+                CollisionBox = new Rectangle(-100, -100, 0, 0);
                 for (int i = 0; i < BulletList.Count; i++)
                 {
-                    BulletList[i].CollisionBox = Rectangle.Empty;
+                    BulletList[i].CollisionBox = new Rectangle(-100, -100, 0, 0);
                 }
             }
 

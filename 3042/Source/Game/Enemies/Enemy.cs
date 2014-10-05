@@ -20,10 +20,19 @@ namespace _3042
             BASIC
         };
 
+        public enum EEnemyType
+        {
+            Asteroid,
+            Warp_CurvLeft,
+            Warp_CurvRight,
+            Warp_CurvUpLeft,
+        };
+
         public BasicSprite Sprite;
         public AnimSprite SpriteAnim;
         public Vector2 Position;
         public Vector2 Direction;
+        public Vector2 GotoPos;
         public float Speed;
         public float Delay;
         public bool isAlive = true;
@@ -33,6 +42,10 @@ namespace _3042
         public float MaxHealth;
         public int Score;
         public bool isWarpIn = false;
+        public List<Bullet> BulletList = new List<Bullet>();
+        public bool HasWeapon = false;
+        public int WeaponDamage;
+        public Vector2 BulletDirection;
 
         private bool isRemoved = false;
         private int ScoreTimer;
@@ -47,8 +60,14 @@ namespace _3042
         private SoundEffectInstance ExplosionSFXIns;
         private SoundEffect WarpInSFX;
         private SoundEffectInstance WarpInSFXIns;
+        private Rectangle ScreenSize;
+        private int RandShootNum;
+
+        //Timers
+        private int[] MoveTimer = new int[3];
 
         public ESpriteType _spriteType = ESpriteType.BASIC;
+        public EEnemyType EnemyType = EEnemyType.Asteroid;
 
         public Enemy(ContentManager getContent, string getTexture, int getWidth, int getHeight)
         {
@@ -77,7 +96,7 @@ namespace _3042
             ExplosionAnim = new AnimSprite(Content, "graphics/Explosion2SS", getWidth * 2, getHeight * 2, 1, 13);
             ShockWaveAnim = new AnimSprite(Content, "graphics/shockwaveSS", getWidth * 3, getHeight * 3, 1, 13);
 
-            //WarpInEffect = new AnimSprite(Content, "graphics/warpinss", Sprite.Width * 2, Sprite.Height * 2, 1, 8);
+            WarpInEffect = new AnimSprite(Content, "graphics/warpinss", SpriteAnim.Width * 2, SpriteAnim.Height * 2, 1, 8);
 
             ExplosionSFX = Content.Load<SoundEffect>("sound/explosion");
             ExplosionSFXIns = ExplosionSFX.CreateInstance();
@@ -89,14 +108,24 @@ namespace _3042
             WarpInSFXIns.Pitch = 0.3f;
         }
 
-        public void Update(GUI getGUI)
+        public void Update(GUI getGUI, Rectangle getScreenSize)
         {
+            ScreenSize = getScreenSize;
             CollisionBoxTexture = Content.Load<Texture2D>("graphics/collisionbox");
 
             if (_spriteType == ESpriteType.ANIM)
                 SpriteAnim.UpdateAnimation(Delay);
 
-            Position += Direction * Speed;
+            switch (EnemyType)
+            {
+                case EEnemyType.Asteroid: Asteroid_Type(); break;
+                case EEnemyType.Warp_CurvLeft: Warp_CurvLeft_Type(); break;
+                case EEnemyType.Warp_CurvRight: Warp_CurvRight_Type(); break;
+                case EEnemyType.Warp_CurvUpLeft: Warp_CurvUpLeft_Type(); break;
+            }
+
+            if (HasWeapon)
+                Weapon();
 
             if (Health <= 0)
             {
@@ -109,27 +138,162 @@ namespace _3042
                     ScoreTimer = 2;
             }
 
-            if (Position.Y >= 800 || Position.Y <= -100 || Position.X >= 800 || Position.X <= -100)
+            if (Position.Y >= 800 || Position.Y <= -100 || Position.X >= 800 || Position.X <= -100 ||
+                GameMode.Mode == GameMode.EGameMode.GAMEOVER || GameMode.Mode == GameMode.EGameMode.MENU)
             {
                 isRemoved = true;
                 isAlive = false;
             }
         }
 
-        public void Draw(SpriteBatch sB)
+        private void Weapon()
         {
+            foreach (Bullet bullet in BulletList)
+                bullet.Update();
             if (isAlive)
             {
-                if (isWarpIn)
-                {
-                    if (!WarpInEffect.AnimationFinnished)
-                    {
-                        WarpInSFXIns.Play();
-                        WarpInEffect.UpdateAnimation(0.4f);
-                        WarpInEffect.Draw(sB, new Vector2(Position.X + 15, Position.Y), MathHelper.ToRadians(270));
-                    }
-                }
+                Random RandShoot = new Random();
+                RandShootNum = RandShoot.Next(1, 50);
 
+                if (RandShootNum == 15)
+                {
+                    Bullet bullet = new Bullet(Content, "graphics/ebullet", 5, 16);
+                    bullet._spriteType = Bullet.ESpriteType.BASIC;
+                    bullet.FirePosition = new Vector2(Position.X, Position.Y + 25);
+                    bullet.Position = new Vector2(Position.X, Position.Y + 25);
+                    bullet.Direction = BulletDirection;
+                    bullet.Direction.Normalize();
+                    bullet.Speed = 8f;
+                    bullet.Damage = WeaponDamage;
+                    BulletList.Add(bullet);
+                    RandShootNum = 0;
+                }
+            }
+        }
+
+        private void Asteroid_Type()
+        {
+            Position += Direction * Speed;
+            isWarpIn = false;
+        }
+        private void Warp_CurvLeft_Type()
+        {
+            isWarpIn = true;
+
+            MoveTimer[0]++;
+            if (MoveTimer[0] <= 100)
+            {
+                GotoPos.X -= 8;
+                GotoPos.Y += 3;
+            }
+            else if (MoveTimer[0] >= 100 && MoveTimer[0] <= 300)
+            {
+                GotoPos.X += 8;
+                GotoPos.Y += 3;
+            }
+            else
+                MoveTimer[0] = 301;
+
+            if (MoveTimer[0] == 301)
+            {
+                GotoPos.X = ScreenSize.X * 2;
+            }
+
+            Direction = GotoPos - Position;
+            Speed = Direction.Length() * 0.01f;
+            Direction.Normalize();
+            Position += Direction * Speed;
+        }
+        private void Warp_CurvRight_Type()
+        {
+            isWarpIn = true;
+
+            MoveTimer[0]++;
+            if (MoveTimer[0] <= 100)
+            {
+                GotoPos.X += 8;
+                GotoPos.Y += 3;
+            }
+            else if (MoveTimer[0] >= 100 && MoveTimer[0] <= 300)
+            {
+                GotoPos.X -= 8;
+                GotoPos.Y += 3;
+            }
+            else
+                MoveTimer[0] = 301;
+
+            if (MoveTimer[0] == 301)
+            {
+                GotoPos.X = -ScreenSize.X;
+            }
+
+            Direction = GotoPos - Position;
+            Speed = Direction.Length() * 0.01f;
+            Direction.Normalize();
+            Position += Direction * Speed;
+        }
+        private void Warp_CurvUpLeft_Type()
+        {
+            isWarpIn = true;
+
+            MoveTimer[0]++;
+            if (MoveTimer[0] <= 100)
+            {
+                GotoPos.X += 1;
+                GotoPos.Y -= 5;
+            }
+            else if (MoveTimer[0] >= 100 && MoveTimer[0] <= 300)
+            {
+                GotoPos.X -= 8;
+                GotoPos.Y += 1;
+            }
+            else
+                MoveTimer[0] = 301;
+
+            if (MoveTimer[0] == 301)
+            {
+                GotoPos.X = -ScreenSize.X;
+            }
+
+            Direction = GotoPos - Position;
+            Speed = Direction.Length() * 0.01f;
+            Direction.Normalize();
+            Position += Direction * Speed;
+        }
+        private void Warp_Bot_Mid_Left_Top_Mid_Type()
+        {
+            isWarpIn = true;
+            Position += Direction * Speed;
+        }
+        private void Warp_Top_Left_Bot_Right_Type()
+        {
+            isWarpIn = true;
+            Position += Direction * Speed;
+        }
+        private void Warp_Top_Right_Bot_Left_Type()
+        {
+            isWarpIn = true;
+            Position += Direction * Speed;
+        }
+
+        public void Draw(SpriteBatch sB)
+        {
+            foreach (Bullet bullet in BulletList)
+                if (bullet.Position.Y <= 800)
+                bullet.Draw(sB);
+
+            if (isWarpIn)
+            {
+                if (!WarpInEffect.AnimationFinnished)
+                {
+                    WarpInSFXIns.Play();
+                    WarpInEffect.UpdateAnimation(0.4f);
+                    WarpInEffect.Draw(sB, new Vector2(Position.X + 15, Position.Y), MathHelper.ToRadians(270));
+                }
+            }
+
+            if (isAlive)
+            {
                 switch (_spriteType)
                 {
                     case ESpriteType.BASIC:
@@ -165,7 +329,7 @@ namespace _3042
                     if (isExplosion)
                     {
                         ExplosionSFXIns.Play();
-                        Speed = 1f;
+                        Speed = 1;
                         ExplosionAnim.UpdateAnimation(0.5f);
                         ExplosionAnim.Draw(sB, Position);
                         ShockWaveAnim.UpdateAnimation(0.5f);

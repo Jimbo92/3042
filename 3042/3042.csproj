@@ -48,10 +48,11 @@
     <Compile Include="Source\Game\Items\BasicItem.cs" />
     <Compile Include="Source\Game\Background.cs" />
     <Compile Include="Source\Game\Bullet.cs" />
-    <Compile Include="Source\Game\Enemy.cs" />
+    <Compile Include="Source\Game\Enemies\Enemy.cs" />
     <Compile Include="Source\Game\Levels\Level1.cs" />
     <Compile Include="Source\Game\Levels\Level_Base.cs" />
     <Compile Include="Source\Game\Lives.cs" />
+    <Compile Include="Source\Game\Menu\GameOver.cs" />
     <Compile Include="Source\Game\Menu\Menu.cs" />
     <Compile Include="Source\Game\Menu\MenuButton.cs" />
     <Compile Include="Source\Game\Menu\Options.cs" />
@@ -145,7 +146,7 @@
     <Content Include="Content\Graphics\ExplosionSS.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Graphics\FailBackground.png">
+    <Content Include="Content\Graphics\GameOverBackground.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Graphics\HealthBar.png">
@@ -245,9 +246,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Source\Game\Enemies\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

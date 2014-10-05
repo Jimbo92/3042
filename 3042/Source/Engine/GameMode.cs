@@ -18,7 +18,8 @@ namespace _3042
         {
             MENU,
             LEVELSELECT,
-            OPTIONS
+            OPTIONS,
+            GAMEOVER
         }
         static public EGameMode Mode = EGameMode.MENU;
 

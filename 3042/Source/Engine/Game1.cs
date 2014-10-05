@@ -33,6 +33,9 @@ namespace _3042
         //Level1
         Level1 _level1;
 
+        //Game Over
+        GameOver GameOverMenu;
+
         public Game1()
             : base()
         {
@@ -67,6 +70,9 @@ namespace _3042
 
             //Options
             OptionsMenu = new Options(Content, ScreenSize);
+
+            //Game Over
+            GameOverMenu = new GameOver(Content, ScreenSize);
 
             //Music
             BackgroundMusicSong = Content.Load<SoundEffect>("sound/Backgroundmusic");
@@ -106,6 +112,11 @@ namespace _3042
                         IsMouseVisible = true;
                         OptionsMenu.Update();
                     }; break;
+                case GameMode.EGameMode.GAMEOVER:
+                    {
+                        IsMouseVisible = true;
+                        GameOverMenu.Update();
+                    }; break;
             }
 
             //Code Above this
@@ -124,6 +135,7 @@ namespace _3042
                 case GameMode.EGameMode.LEVELSELECT: _level1.Draw(spriteBatch); break;
                 case GameMode.EGameMode.MENU: MainMenu.Draw(spriteBatch); break;
                 case GameMode.EGameMode.OPTIONS: OptionsMenu.Draw(spriteBatch); break;
+                case GameMode.EGameMode.GAMEOVER: GameOverMenu.Draw(spriteBatch); break;
             }
 
             //Code Above this

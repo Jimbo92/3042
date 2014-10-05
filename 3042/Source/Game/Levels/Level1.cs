@@ -22,6 +22,9 @@ namespace _3042
         private int AsteroidWarningTimer;
         private SoundEffect WarningSFX;
         private SoundEffectInstance WarningSFXIns;
+        private int GameTimer;
+        private int GameTimePast;
+        private Font DebugGameTime;
 
         //Music
         private SoundEffect BackgroundMusicSong;
@@ -45,36 +48,50 @@ namespace _3042
             BackgroundMusicSongIns.IsLooped = true;
             BackgroundMusicSongIns.Volume = 0.1f;
 
+            DebugGameTime = new Font(getContent);
+
         }
 
         public void Update(GameTime getGameTime)
         {
-            BaseCode.Update(getGameTime);
+            BaseCode.Update(getGameTime, ScreenSize);
             GameTicks = getGameTime.TotalGameTime.Seconds;
 
-            if (GameMode.UniMusic == GameMode.EUniMusic.Mute || GameMode.Mode == GameMode.EGameMode.MENU)
+            if (GameMode.Mode == GameMode.EGameMode.GAMEOVER || GameMode.Mode == GameMode.EGameMode.MENU)
+                GameTimePast = 0;
+
+            GameTimer++;
+            if (GameTimer >= 50)
+            {
+                GameTimePast++;
+                GameTimer = 0;
+            }
+
+            if (GameMode.UniMusic == GameMode.EUniMusic.Mute || GameMode.Mode == GameMode.EGameMode.MENU || GameMode.Mode == GameMode.EGameMode.GAMEOVER)
                 BackgroundMusicSongIns.Stop();
             else if (GameMode.UniMusic == GameMode.EUniMusic.Unmute)
                 BackgroundMusicSongIns.Play();
             //Code bellow this
 
-            if (GameTicks >= 1 && GameTicks <= 20)
+            if (GameTimePast >= 1 && GameTimePast <= 20)
             {
                 BaseCode.RandAsteroidWave(200);
             }
-            if (GameTicks >= 23 && GameTicks <= 35)
+            if (GameTimePast >= 23 && GameTimePast <= 35)
             {
                 BaseCode.RandAsteroidWave(10);
             }
 
-            //if (GameTicks >= 5 && GameTicks <= 10)
-            //{             
-            //    BaseCode.SmallEnemyWave(50, new Vector2(50, 100), new Vector2(800, 200), 2f);
-            //}
-            //if (GameTicks >= 11 && GameTicks <= 15)
-            //{               
-            //    BaseCode.SmallEnemyWave(100, new Vector2(600, 100), new Vector2(-100, 200), 2f);
-            //}
+            if (GameTimePast >= 10 && GameTimePast <= 15)
+            {
+                BaseCode.SmallEnemyCurvLeftWave(25);
+                BaseCode.SmallEnemyCurvRightWave(25);
+            }
+            if (GameTimePast >= 40 && GameTimePast <= 50)
+            {
+                BaseCode.SmallEnemyCurvRightWave(50);
+                BaseCode.SmallEnemyCurvUpLeftWave(50);
+            }
 
         }
 
@@ -83,7 +100,9 @@ namespace _3042
             BaseCode.Draw(sB);
             //Code Bellow this
 
-            if (GameTicks >= 20 && GameTicks <= 20.5)
+            DebugGameTime.Draw(sB, "Game Time " + GameTimePast.ToString(), new Vector2(100, 50), 0.3f, Color.Red);
+
+            if (GameTimePast >= 20 && GameTimePast <= 20.5)
             {
                 WarningSFXIns.Play();
 
