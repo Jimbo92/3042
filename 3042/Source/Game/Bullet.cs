@@ -20,6 +20,12 @@ namespace _3042
             BASIC
         };
 
+        public enum EBulletType
+        {
+            Player,
+            Enemy
+        };
+
         public BasicSprite sprite;
         public AnimSprite SpriteAnim;
         public Vector2 Position;
@@ -41,23 +47,38 @@ namespace _3042
         private Texture2D CollisionBoxTexture;
 
         public ESpriteType _spriteType = ESpriteType.BASIC;
+        public EBulletType BulletType = EBulletType.Player;
 
 
-        public Bullet(ContentManager getContent, string getTexture, int getWidth, int getHeight)
+        public Bullet(ContentManager getContent, EBulletType getBulletType, string getTexture, int getWidth, int getHeight)
         {
             Content = getContent;
             sprite = new BasicSprite(getContent, getTexture, getWidth, getHeight);
-            ExplosionAnim = new AnimSprite(Content, "graphics/BulletExplosionSS", getWidth, getHeight, 1, 8);
-            ShootAnim = new AnimSprite(Content, "graphics/ShootEffect1SS", getWidth * 2, getHeight, 2, 1);
-
+            if (getBulletType == EBulletType.Player)
+            {
+                ShootAnim = new AnimSprite(Content, "graphics/ShootEffect1SS", getWidth * 2, getHeight, 2, 1);
+                ExplosionAnim = new AnimSprite(Content, "graphics/BulletExplosionSS", getWidth, getHeight, 1, 8);
+            }
+            else if (getBulletType == EBulletType.Enemy)
+            {
+                ShootAnim = new AnimSprite(Content, "graphics/ShootEffect2SS", getWidth * 6, getHeight * 2, 2, 1);
+                ExplosionAnim = new AnimSprite(Content, "graphics/BulletExplosion4SS", getWidth * 2, getHeight * 2, 1, 8);
+            }
         }
-        public Bullet(ContentManager getContent, string getTexture, int getWidth, int getHeight, int getRows, int getColumns)
+        public Bullet(ContentManager getContent, EBulletType getBulletType, string getTexture, int getWidth, int getHeight, int getRows, int getColumns)
         {
             Content = getContent;
             SpriteAnim = new AnimSprite(Content, getTexture, getWidth, getHeight, getRows, getColumns);
-            ExplosionAnim = new AnimSprite(Content, "graphics/BulletExplosionSS", getWidth, getHeight, 1, 8);
-            ShootAnim = new AnimSprite(Content, "graphics/ShootEffect1SS", getWidth * 2, getHeight, 2, 1);
-
+            if (getBulletType == EBulletType.Player)
+            {
+                ShootAnim = new AnimSprite(Content, "graphics/ShootEffect1SS", getWidth * 2, getHeight, 2, 1);
+                ExplosionAnim = new AnimSprite(Content, "graphics/BulletExplosionSS", getWidth, getHeight, 1, 8);
+            }
+            else if (getBulletType == EBulletType.Enemy)
+            {
+                ShootAnim = new AnimSprite(Content, "graphics/ShootEffect2SS", getWidth * 6, getHeight * 2, 2, 1);
+                ExplosionAnim = new AnimSprite(Content, "graphics/BulletExplosion4SS", getWidth * 2, getHeight * 2, 1, 8);
+            }   
         }
 
         public void Update()

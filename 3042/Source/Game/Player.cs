@@ -110,6 +110,9 @@ namespace _3042
                 Reset();
             }
 
+            if (BulletList.Count >= 100)
+                BulletList.RemoveAt(0);
+
             if (isAlive)
             {
                 SetupAnimations();
@@ -221,7 +224,7 @@ namespace _3042
         }
         private void ShootBasic()
         {
-            Bullet bullet = new Bullet(Content, "graphics/PBullet2", 32, 48, 2, 1);
+            Bullet bullet = new Bullet(Content, Bullet.EBulletType.Player, "graphics/PBullet2", 42, 58, 2, 1);
             bullet._spriteType = Bullet.ESpriteType.ANIM;
             bullet.Delay = 0.3f;
             bullet.FirePosition = new Vector2(Position.X, Position.Y - 25);
@@ -229,12 +232,12 @@ namespace _3042
             bullet.Direction = new Vector2(Position.X, -100) - bullet.Position;
             bullet.Direction.Normalize();
             bullet.Speed = 15f;
-            bullet.Damage = 20;
+            bullet.Damage = 30;
             BulletList.Add(bullet);
         }
         private void ShootAdvanced()
         {
-            Bullet bulletLeft = new Bullet(Content, "graphics/PBullet2", 32, 48, 2, 1);
+            Bullet bulletLeft = new Bullet(Content, Bullet.EBulletType.Player, "graphics/PBullet2", 32, 48, 2, 1);
             bulletLeft._spriteType = Bullet.ESpriteType.ANIM;
             bulletLeft.Delay = 0.3f;
             bulletLeft.FirePosition = new Vector2(Position.X - 17, Position.Y - 10);
@@ -242,10 +245,10 @@ namespace _3042
             bulletLeft.Direction = new Vector2(Position.X - 20, -100) - bulletLeft.Position;
             bulletLeft.Direction.Normalize();
             bulletLeft.Speed = 15f;
-            bulletLeft.Damage = 10;
+            bulletLeft.Damage = 5;
             BulletList.Add(bulletLeft);
 
-            Bullet bulletRight = new Bullet(Content, "graphics/PBullet2", 32, 48, 2, 1);
+            Bullet bulletRight = new Bullet(Content, Bullet.EBulletType.Player, "graphics/PBullet2", 32, 48, 2, 1);
             bulletRight._spriteType = Bullet.ESpriteType.ANIM;
             bulletRight.Delay = 0.3f;
             bulletRight.FirePosition = new Vector2(Position.X + 17, Position.Y - 10);
@@ -253,12 +256,12 @@ namespace _3042
             bulletRight.Direction = new Vector2(Position.X + 20, -100) - bulletRight.Position;
             bulletRight.Direction.Normalize();
             bulletRight.Speed = 15f;
-            bulletRight.Damage = 10;
+            bulletRight.Damage = 5;
             BulletList.Add(bulletRight);
         }
         private void ShootMax()
         {
-            Bullet bulletLeft = new Bullet(Content, "graphics/PBullet2", 32, 48, 2, 1);
+            Bullet bulletLeft = new Bullet(Content, Bullet.EBulletType.Player, "graphics/PBullet2", 22, 38, 2, 1);
             bulletLeft._spriteType = Bullet.ESpriteType.ANIM;
             bulletLeft.Delay = 0.3f;
             bulletLeft.FirePosition = new Vector2(Position.X - 5, Position.Y - 25);
@@ -266,10 +269,10 @@ namespace _3042
             bulletLeft.Direction = new Vector2(Position.X - 100, -100) - bulletLeft.Position;
             bulletLeft.Direction.Normalize();
             bulletLeft.Speed = 18f;
-            bulletLeft.Damage = 5;
+            bulletLeft.Damage = 2;
             BulletList.Add(bulletLeft);
 
-            Bullet bulletRight = new Bullet(Content, "graphics/PBullet2", 32, 48, 2, 1);
+            Bullet bulletRight = new Bullet(Content, Bullet.EBulletType.Player, "graphics/PBullet2", 22, 38, 2, 1);
             bulletRight._spriteType = Bullet.ESpriteType.ANIM;
             bulletRight.Delay = 0.3f;
             bulletRight.FirePosition = new Vector2(Position.X + 5, Position.Y - 25);
@@ -277,7 +280,7 @@ namespace _3042
             bulletRight.Direction = new Vector2(Position.X + 100, -100) - bulletRight.Position;
             bulletRight.Direction.Normalize();
             bulletRight.Speed = 18f;
-            bulletRight.Damage = 5;
+            bulletRight.Damage = 2;
             BulletList.Add(bulletRight);
         }
 

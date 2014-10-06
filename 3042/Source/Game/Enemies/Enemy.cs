@@ -26,6 +26,16 @@ namespace _3042
             Warp_CurvLeft,
             Warp_CurvRight,
             Warp_CurvUpLeft,
+            Warp_CurvUpRight,
+            Warp_JumpLeftRightDown,
+            Warp_JumpRightLeftDown,
+        };
+
+        public enum EWeaponType
+        {
+            Basic,
+            DoubleBarrel,
+            BossWep
         };
 
         public BasicSprite Sprite;
@@ -61,13 +71,16 @@ namespace _3042
         private SoundEffect WarpInSFX;
         private SoundEffectInstance WarpInSFXIns;
         private Rectangle ScreenSize;
-        private int RandShootNum;
+        private Player player;
+        private float Rotation = 0;
 
         //Timers
         private int[] MoveTimer = new int[3];
+        private int[] WeaponTimer = new int[5];
 
         public ESpriteType _spriteType = ESpriteType.BASIC;
         public EEnemyType EnemyType = EEnemyType.Asteroid;
+        public EWeaponType WeaponType = EWeaponType.Basic;
 
         public Enemy(ContentManager getContent, string getTexture, int getWidth, int getHeight)
         {
@@ -108,9 +121,10 @@ namespace _3042
             WarpInSFXIns.Pitch = 0.3f;
         }
 
-        public void Update(GUI getGUI, Rectangle getScreenSize)
+        public void Update(GUI getGUI, Rectangle getScreenSize, Player getPlayer)
         {
             ScreenSize = getScreenSize;
+            player = getPlayer;
             CollisionBoxTexture = Content.Load<Texture2D>("graphics/collisionbox");
 
             if (_spriteType == ESpriteType.ANIM)
@@ -122,6 +136,21 @@ namespace _3042
                 case EEnemyType.Warp_CurvLeft: Warp_CurvLeft_Type(); break;
                 case EEnemyType.Warp_CurvRight: Warp_CurvRight_Type(); break;
                 case EEnemyType.Warp_CurvUpLeft: Warp_CurvUpLeft_Type(); break;
+                case EEnemyType.Warp_CurvUpRight: Warp_CurvUpRight_Type(); break;
+                case EEnemyType.Warp_JumpLeftRightDown: Warp_JumpLeftRightDown_Type(); break;
+                case EEnemyType.Warp_JumpRightLeftDown: Warp_JumpRightLeftDown_Type(); break;
+            }
+
+            if (EnemyType == EEnemyType.Asteroid)
+            {
+                Position += Direction * Speed;
+            }
+            else
+            {
+                Direction = GotoPos - Position;
+                Speed = Direction.Length() * 0.01f;
+                Direction.Normalize();
+                Position += Direction * Speed;
             }
 
             if (HasWeapon)
@@ -149,31 +178,92 @@ namespace _3042
         private void Weapon()
         {
             foreach (Bullet bullet in BulletList)
+            {
                 bullet.Update();
+
+                if (bullet.Position.Y >= 800 || bullet.Position.Y <= -100)
+                {
+                    bullet.isRemoved = true;
+                    bullet.isAlive = false;
+                }
+            }
+
             if (isAlive)
             {
-                Random RandShoot = new Random();
-                RandShootNum = RandShoot.Next(1, 50);
-
-                if (RandShootNum == 15)
+                if (WeaponType == EWeaponType.Basic)
                 {
-                    Bullet bullet = new Bullet(Content, "graphics/ebullet", 5, 16);
-                    bullet._spriteType = Bullet.ESpriteType.BASIC;
-                    bullet.FirePosition = new Vector2(Position.X, Position.Y + 25);
-                    bullet.Position = new Vector2(Position.X, Position.Y + 25);
-                    bullet.Direction = BulletDirection;
-                    bullet.Direction.Normalize();
-                    bullet.Speed = 8f;
-                    bullet.Damage = WeaponDamage;
-                    BulletList.Add(bullet);
-                    RandShootNum = 0;
+                    WeaponTimer[0]++;
+                    if (WeaponTimer[0] <= 100)
+                    {
+                        WeaponTimer[1]++;
+                        if (WeaponTimer[1] >= 25)
+                        {
+                            Bullet bullet = new Bullet(Content, Bullet.EBulletType.Enemy, "graphics/ebullet", 8, 16);
+                            bullet._spriteType = Bullet.ESpriteType.BASIC;
+                            bullet.FirePosition = new Vector2(Position.X + 15, Position.Y + 35);
+                            bullet.Position = bullet.FirePosition;
+                            bullet.Direction = BulletDirection;
+                            bullet.Direction.Normalize();
+                            bullet.Speed = 8f;
+                            bullet.Damage = WeaponDamage;
+                            BulletList.Add(bullet);
+
+                            WeaponTimer[1] = 0;
+                        }
+                    }
+                    else if (WeaponTimer[0] >= 500)
+                        WeaponTimer[0] = 0;
+                }
+                else if (WeaponType == EWeaponType.DoubleBarrel)
+                {
+                    WeaponTimer[0]++;
+                    if (WeaponTimer[0] <= 100)
+                    {
+                        WeaponTimer[1]++;
+                        WeaponTimer[2]++;
+                        if (WeaponTimer[1] >= 15)
+                        {
+                            Bullet bullet = new Bullet(Content, Bullet.EBulletType.Enemy, "graphics/ebullet3", 10, 32, 2, 1);
+                            bullet._spriteType = Bullet.ESpriteType.ANIM;
+                            bullet.Delay = 0.5f;
+                            bullet.FirePosition = new Vector2(Position.X + 30, Position.Y + 50);
+                            bullet.Position = bullet.FirePosition;
+                            bullet.Direction = BulletDirection;
+                            bullet.Direction.Normalize();
+                            bullet.Speed = 10f;
+                            bullet.Damage = WeaponDamage;
+                            BulletList.Add(bullet);
+
+                            WeaponTimer[1] = 0;
+                        }
+                        if (WeaponTimer[2] >= 25)
+                        {
+                            Bullet bullet = new Bullet(Content, Bullet.EBulletType.Enemy, "graphics/ebullet3", 10, 32, 2, 1);
+                            bullet._spriteType = Bullet.ESpriteType.ANIM;
+                            bullet.Delay = 0.5f;
+                            bullet.FirePosition = new Vector2(Position.X + 3, Position.Y + 50);
+                            bullet.Position = bullet.FirePosition;
+                            bullet.Direction = BulletDirection;
+                            bullet.Direction.Normalize();
+                            bullet.Speed = 10f;
+                            bullet.Damage = WeaponDamage;
+                            BulletList.Add(bullet);
+
+                            WeaponTimer[2] = 0;
+                        }
+                    }
+                    else if (WeaponTimer[0] >= 150)
+                        WeaponTimer[0] = 0;
+                }
+                else if (WeaponType == EWeaponType.BossWep)
+                {
+
                 }
             }
         }
 
         private void Asteroid_Type()
         {
-            Position += Direction * Speed;
             isWarpIn = false;
         }
         private void Warp_CurvLeft_Type()
@@ -192,17 +282,14 @@ namespace _3042
                 GotoPos.Y += 3;
             }
             else
-                MoveTimer[0] = 301;
-
-            if (MoveTimer[0] == 301)
             {
+                MoveTimer[0] = 301;
                 GotoPos.X = ScreenSize.X * 2;
             }
 
-            Direction = GotoPos - Position;
-            Speed = Direction.Length() * 0.01f;
-            Direction.Normalize();
-            Position += Direction * Speed;
+
+            // Rotate to player code
+            //Rotation = (float)Math.Atan2((double)player.Position.X - (double)Position.X, (double)player.Position.Y - (double)Position.Y);
         }
         private void Warp_CurvRight_Type()
         {
@@ -220,17 +307,11 @@ namespace _3042
                 GotoPos.Y += 3;
             }
             else
-                MoveTimer[0] = 301;
-
-            if (MoveTimer[0] == 301)
             {
+                MoveTimer[0] = 301;
                 GotoPos.X = -ScreenSize.X;
             }
 
-            Direction = GotoPos - Position;
-            Speed = Direction.Length() * 0.01f;
-            Direction.Normalize();
-            Position += Direction * Speed;
         }
         private void Warp_CurvUpLeft_Type()
         {
@@ -248,39 +329,90 @@ namespace _3042
                 GotoPos.Y += 1;
             }
             else
-                MoveTimer[0] = 301;
-
-            if (MoveTimer[0] == 301)
             {
+                MoveTimer[0] = 301;
                 GotoPos.X = -ScreenSize.X;
             }
 
-            Direction = GotoPos - Position;
-            Speed = Direction.Length() * 0.01f;
-            Direction.Normalize();
-            Position += Direction * Speed;
         }
-        private void Warp_Bot_Mid_Left_Top_Mid_Type()
+        private void Warp_CurvUpRight_Type()
         {
             isWarpIn = true;
-            Position += Direction * Speed;
+            MoveTimer[0]++;
+            if (MoveTimer[0] <= 100)
+            {
+                GotoPos.X -= 1;
+                GotoPos.Y -= 5;
+            }
+            else if (MoveTimer[0] >= 100 && MoveTimer[0] <= 300)
+            {
+                GotoPos.X += 8;
+                GotoPos.Y += 1;
+            }
+            else
+            {
+                MoveTimer[0] = 301;
+                GotoPos.X = ScreenSize.X * 2;
+            }
+
         }
-        private void Warp_Top_Left_Bot_Right_Type()
+        private void Warp_JumpLeftRightDown_Type()
         {
             isWarpIn = true;
-            Position += Direction * Speed;
+            MoveTimer[0]++;
+            if (MoveTimer[0] <= 150)
+            {
+                GotoPos = new Vector2(100, 100);
+            }
+            else if (MoveTimer[0] >= 150 && MoveTimer[0] <= 250)
+            {
+                GotoPos = new Vector2(600, 300);
+            }
+            else if (MoveTimer[0] >= 250 && MoveTimer[0] <= 350)
+            {
+                GotoPos = new Vector2(100, 500);
+            }
+            else if (MoveTimer[0] >= 350 && MoveTimer[0] <= 450)
+            {
+                GotoPos = new Vector2(600, 700);
+            }
+            else
+            {
+                MoveTimer[0] = 451;
+                GotoPos.Y = ScreenSize.Y * 2;
+            }
         }
-        private void Warp_Top_Right_Bot_Left_Type()
+        private void Warp_JumpRightLeftDown_Type()
         {
             isWarpIn = true;
-            Position += Direction * Speed;
+            MoveTimer[0]++;
+            if (MoveTimer[0] <= 150)
+            {
+                GotoPos = new Vector2(600, 100);
+            }
+            else if (MoveTimer[0] >= 150 && MoveTimer[0] <= 250)
+            {
+                GotoPos = new Vector2(100, 300);
+            }
+            else if (MoveTimer[0] >= 250 && MoveTimer[0] <= 350)
+            {
+                GotoPos = new Vector2(600, 500);
+            }
+            else if (MoveTimer[0] >= 350 && MoveTimer[0] <= 450)
+            {
+                GotoPos = new Vector2(100, 700);
+            }
+            else
+            {
+                MoveTimer[0] = 451;
+                GotoPos.Y = ScreenSize.Y * 2;
+            }
         }
 
         public void Draw(SpriteBatch sB)
         {
             foreach (Bullet bullet in BulletList)
-                if (bullet.Position.Y <= 800)
-                bullet.Draw(sB);
+                    bullet.Draw(sB);
 
             if (isWarpIn)
             {
@@ -298,13 +430,13 @@ namespace _3042
                 {
                     case ESpriteType.BASIC:
                         {
-                            Sprite.Draw(sB, Position);
+                            Sprite.Draw(sB, Position, -Rotation);
                             CollisionBox = new Rectangle((int)Position.X - Sprite.Width / 2, (int)Position.Y - Sprite.Height / 2, Sprite.Width, Sprite.Height);
                         }; break;
 
                     case ESpriteType.ANIM:
                         {
-                            SpriteAnim.Draw(sB, Position);
+                            SpriteAnim.Draw(sB, Position, -Rotation);
                             CollisionBox = new Rectangle((int)Position.X - SpriteAnim.Width / 2, (int)Position.Y - SpriteAnim.Height / 2, SpriteAnim.Width, SpriteAnim.Height);
                         }; break;
                 }
@@ -329,7 +461,7 @@ namespace _3042
                     if (isExplosion)
                     {
                         ExplosionSFXIns.Play();
-                        Speed = 1;
+                        Speed = 0;
                         ExplosionAnim.UpdateAnimation(0.5f);
                         ExplosionAnim.Draw(sB, Position);
                         ShockWaveAnim.UpdateAnimation(0.5f);

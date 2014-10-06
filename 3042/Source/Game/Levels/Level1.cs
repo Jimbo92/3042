@@ -26,6 +26,8 @@ namespace _3042
         private int GameTimePast;
         private Font DebugGameTime;
 
+        private int[] EnemySpawnTimers = new int[10];
+
         //Music
         private SoundEffect BackgroundMusicSong;
         private SoundEffectInstance BackgroundMusicSongIns;
@@ -73,24 +75,33 @@ namespace _3042
                 BackgroundMusicSongIns.Play();
             //Code bellow this
 
-            if (GameTimePast >= 1 && GameTimePast <= 20)
+            if (GameTimePast >= 1 && GameTimePast <= 100)
             {
-                BaseCode.RandAsteroidWave(200);
+                BaseCode.RandAsteroidWave(0, 200);
+            }
+            if (GameTimePast >= 10 && GameTimePast <= 15)
+            {
+                BaseCode.SmallEnemyWave(2, 50, Enemy.EEnemyType.Warp_JumpLeftRightDown, ScreenSize.X - 50, 50);
+                BaseCode.BigEnemyWave(3, 100, Enemy.EEnemyType.Warp_JumpRightLeftDown, 50, 100);
             }
             if (GameTimePast >= 23 && GameTimePast <= 35)
             {
-                BaseCode.RandAsteroidWave(10);
-            }
-
-            if (GameTimePast >= 10 && GameTimePast <= 15)
-            {
-                BaseCode.SmallEnemyCurvLeftWave(25);
-                BaseCode.SmallEnemyCurvRightWave(25);
+                BaseCode.RandAsteroidWave(1, 10);
             }
             if (GameTimePast >= 40 && GameTimePast <= 50)
             {
-                BaseCode.SmallEnemyCurvRightWave(50);
-                BaseCode.SmallEnemyCurvUpLeftWave(50);
+                BaseCode.BigEnemyWave(2, 100, Enemy.EEnemyType.Warp_CurvUpLeft, ScreenSize.X - 100, 600);
+                BaseCode.SmallEnemyWave(3, 35, Enemy.EEnemyType.Warp_JumpRightLeftDown, 50, 100);
+            }
+            if (GameTimePast >= 55 && GameTimePast <= 65)
+            {
+                BaseCode.BigEnemyWave(2, 50, Enemy.EEnemyType.Warp_CurvLeft, ScreenSize.X - 100, 50);
+                BaseCode.SmallEnemyWave(3, 35, Enemy.EEnemyType.Warp_CurvRight, 50, 100);
+            }
+            if (GameTimePast >= 70 && GameTimePast <= 80)
+            {
+                BaseCode.BigEnemyWave(2, 35, Enemy.EEnemyType.Warp_CurvUpLeft, ScreenSize.X - 100, 600);
+                BaseCode.BigEnemyWave(3, 35, Enemy.EEnemyType.Warp_CurvUpRight, 100, 600);
             }
 
         }

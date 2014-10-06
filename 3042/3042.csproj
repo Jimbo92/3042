@@ -46,7 +46,7 @@
     <Compile Include="Source\Engine\GUI.cs" />
     <Compile Include="Source\Engine\Input.cs" />
     <Compile Include="Source\Game\Items\BasicItem.cs" />
-    <Compile Include="Source\Game\Background.cs" />
+    <Compile Include="Source\Game\Background\Background.cs" />
     <Compile Include="Source\Game\Bullet.cs" />
     <Compile Include="Source\Game\Enemies\Enemy.cs" />
     <Compile Include="Source\Game\Levels\Level1.cs" />
@@ -57,7 +57,7 @@
     <Compile Include="Source\Game\Menu\MenuButton.cs" />
     <Compile Include="Source\Game\Menu\Options.cs" />
     <Compile Include="Source\Game\Player.cs" />
-    <Compile Include="Source\Game\Star.cs" />
+    <Compile Include="Source\Game\Background\Background_Effects.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="OpenTK">
@@ -92,16 +92,22 @@
     <Content Include="Content\Graphics\BackBurnerSS.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Graphics\Background_Nebula.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Graphics\Background_Planet1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Graphics\Background_Planet2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Graphics\Background_Planet3.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Graphics\BarBackground.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Graphics\BulletExplosion1SS.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Graphics\BulletExplosion2SS.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Graphics\BulletExplosion3SS.png">
+    <Content Include="Content\Graphics\BulletExplosion4SS.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Graphics\BulletExplosionSS.png">
@@ -117,6 +123,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Graphics\EBullet.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Graphics\EBullet2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Graphics\EBullet3.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Graphics\EnemyBig.png">
@@ -189,6 +201,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Graphics\ShootEffect1SS.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Graphics\ShootEffect2SS.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Graphics\StarSS.png">
