@@ -100,8 +100,8 @@ namespace _3042
             }
             if (GameTimePast >= 70 && GameTimePast <= 80)
             {
-                BaseCode.BigEnemyWave(2, 35, Enemy.EEnemyType.Warp_CurvUpLeft, ScreenSize.X - 100, 600);
-                BaseCode.BigEnemyWave(3, 35, Enemy.EEnemyType.Warp_CurvUpRight, 100, 600);
+                BaseCode.BigEnemyWave(2, 45, Enemy.EEnemyType.Warp_CurvUpLeft, ScreenSize.X - 100, 600);
+                BaseCode.BigEnemyWave(3, 50, Enemy.EEnemyType.Warp_CurvUpRight, 50, 550);
             }
 
         }

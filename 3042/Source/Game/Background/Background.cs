@@ -54,13 +54,13 @@ namespace _3042
                 }
             }
 
-            if (StarList.Count >= 90)
+            if (StarList.Count >= 200)
             {
                 StarList.RemoveAt(0);
             }
 
             Timer[1]++;
-            if (Timer[1] >= 1000)
+            if (Timer[1] >= 2000)
             {
                 //AddNebula();
                 AddPlanet();
@@ -68,7 +68,7 @@ namespace _3042
             }
 
             Timer[0]++;
-            if (Timer[0] >= 2)
+            if (Timer[0] >= 1.5f)
             {
                 RandStarPosNum = RandStarPos.Next(701);
                 AddStar(RandStarPosNum, RandStarPosNum);
@@ -85,7 +85,7 @@ namespace _3042
             star.Direction = new Vector2(getDirX, 800) - star.Position;
             star.Direction.Normalize();
             Random Rand2 = new Random();
-            float RandNum2 = Rand2.Next(5, 10);
+            float RandNum2 = Rand2.Next(2, 5);
             star.Speed = RandNum2;
 
             StarList.Add(star);
@@ -116,7 +116,7 @@ namespace _3042
             Planet.Position = new Vector2(RandNum2, -ScreenSize.Y / 2);
             Planet.Direction = new Vector2(RandNum2, ScreenSize.Y * 2) - Planet.Position;
             Planet.Direction.Normalize();
-            Planet.Speed = 4f;
+            Planet.Speed = 1.5f;
             Random Rand3 = new Random();
             int RandNum3 = Rand3.Next(0, 3);
             Planet.SpriteAnim.currentFrame = RandNum3;

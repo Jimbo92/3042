@@ -132,8 +132,9 @@ namespace _3042
         }
         private void SpawnEnemySmall(Enemy.EEnemyType getEnemyType, Vector2 getStartPosition)
         {
-            Enemy enemy = new Enemy(Content, "graphics/enemysmall", 48, 48);
-            enemy._spriteType = Enemy.ESpriteType.BASIC;
+            Enemy enemy = new Enemy(Content, "graphics/enemysmallss", 48, 48, 1, 6);
+            enemy.Delay = 0.15f;
+            enemy._spriteType = Enemy.ESpriteType.ANIM;
             enemy.WeaponType = Enemy.EWeaponType.Basic;
             enemy.EnemyType = getEnemyType;
             enemy.Position = getStartPosition;
@@ -163,8 +164,9 @@ namespace _3042
         }
         private void SpawnEnemyBig(Enemy.EEnemyType getEnemyType, Vector2 getStartPosition)
         {
-            Enemy enemy = new Enemy(Content, "graphics/enemybig", 64, 64);
-            enemy._spriteType = Enemy.ESpriteType.BASIC;
+            Enemy enemy = new Enemy(Content, "graphics/enemybigss", 64, 64, 1, 6);
+            enemy.Delay = 0.15f;
+            enemy._spriteType = Enemy.ESpriteType.ANIM;
             enemy.WeaponType = Enemy.EWeaponType.DoubleBarrel;
             enemy.EnemyType = getEnemyType;
             enemy.Position = getStartPosition;

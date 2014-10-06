@@ -109,7 +109,7 @@ namespace _3042
             ExplosionAnim = new AnimSprite(Content, "graphics/Explosion2SS", getWidth * 2, getHeight * 2, 1, 13);
             ShockWaveAnim = new AnimSprite(Content, "graphics/shockwaveSS", getWidth * 3, getHeight * 3, 1, 13);
 
-            WarpInEffect = new AnimSprite(Content, "graphics/warpinss", SpriteAnim.Width * 2, SpriteAnim.Height * 2, 1, 8);
+            WarpInEffect = new AnimSprite(Content, "graphics/warpinss", SpriteAnim.Width * 4, SpriteAnim.Height * 3, 1, 9);
 
             ExplosionSFX = Content.Load<SoundEffect>("sound/explosion");
             ExplosionSFXIns = ExplosionSFX.CreateInstance();
@@ -200,7 +200,7 @@ namespace _3042
                         {
                             Bullet bullet = new Bullet(Content, Bullet.EBulletType.Enemy, "graphics/ebullet", 8, 16);
                             bullet._spriteType = Bullet.ESpriteType.BASIC;
-                            bullet.FirePosition = new Vector2(Position.X + 15, Position.Y + 35);
+                            bullet.FirePosition = new Vector2(Position.X, Position.Y + 25);
                             bullet.Position = bullet.FirePosition;
                             bullet.Direction = BulletDirection;
                             bullet.Direction.Normalize();
@@ -225,8 +225,8 @@ namespace _3042
                         {
                             Bullet bullet = new Bullet(Content, Bullet.EBulletType.Enemy, "graphics/ebullet3", 10, 32, 2, 1);
                             bullet._spriteType = Bullet.ESpriteType.ANIM;
-                            bullet.Delay = 0.5f;
-                            bullet.FirePosition = new Vector2(Position.X + 30, Position.Y + 50);
+                            bullet.Delay = 0.2f;
+                            bullet.FirePosition = new Vector2(Position.X + 16, Position.Y + 35);
                             bullet.Position = bullet.FirePosition;
                             bullet.Direction = BulletDirection;
                             bullet.Direction.Normalize();
@@ -240,8 +240,8 @@ namespace _3042
                         {
                             Bullet bullet = new Bullet(Content, Bullet.EBulletType.Enemy, "graphics/ebullet3", 10, 32, 2, 1);
                             bullet._spriteType = Bullet.ESpriteType.ANIM;
-                            bullet.Delay = 0.5f;
-                            bullet.FirePosition = new Vector2(Position.X + 3, Position.Y + 50);
+                            bullet.Delay = 0.2f;
+                            bullet.FirePosition = new Vector2(Position.X - 16, Position.Y + 35);
                             bullet.Position = bullet.FirePosition;
                             bullet.Direction = BulletDirection;
                             bullet.Direction.Normalize();
@@ -420,7 +420,7 @@ namespace _3042
                 {
                     WarpInSFXIns.Play();
                     WarpInEffect.UpdateAnimation(0.4f);
-                    WarpInEffect.Draw(sB, new Vector2(Position.X + 15, Position.Y), MathHelper.ToRadians(270));
+                    WarpInEffect.Draw(sB, new Vector2(Position.X, Position.Y), MathHelper.ToRadians(270));
                 }
             }
 
