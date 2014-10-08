@@ -38,6 +38,7 @@ namespace _3042
         public float Delay;
         public Vector2 FirePosition;
         public float Damage;
+        public float Rotation = 0;
 
         private AnimSprite ExplosionAnim;
         private bool isExplosion = false;
@@ -105,13 +106,13 @@ namespace _3042
                 {
                     case ESpriteType.BASIC:
                         {
-                            sprite.Draw(sB, Position);
+                            sprite.Draw(sB, Position, Rotation);
                             CollisionBox = new Rectangle((int)Position.X - sprite.Width / 2, (int)Position.Y - sprite.Height / 2, sprite.Width, sprite.Height);
                         }; break;
 
                     case ESpriteType.ANIM:
                         {
-                            SpriteAnim.Draw(sB, Position);
+                            SpriteAnim.Draw(sB, Position, Rotation);
                             CollisionBox = new Rectangle((int)Position.X - SpriteAnim.Width / 2, (int)Position.Y - SpriteAnim.Height / 2, SpriteAnim.Width, SpriteAnim.Height);
                         }; break;
                 }
@@ -126,7 +127,7 @@ namespace _3042
                 if (isShooting)
                 {
                     ShootAnim.UpdateAnimation(1f);
-                    ShootAnim.Draw(sB, FirePosition);
+                    ShootAnim.Draw(sB, FirePosition, Rotation);
                 }
 
             }           

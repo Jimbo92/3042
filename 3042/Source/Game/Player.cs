@@ -86,8 +86,8 @@ namespace _3042
             ShieldEffect = new AnimSprite(getContent, "graphics/shieldss", Sprite.Width * 2, Sprite.Height * 2, 1, 8);
             Cursor = new AnimSprite(getContent, "graphics/cursor", 50, 35, 1, 3);
 
-            PlayerShootSFX[0] = Content.Load<SoundEffect>("sound/playershoot2");
-            PlayerShootSFX[1] = Content.Load<SoundEffect>("sound/playershoot3");
+            PlayerShootSFX[0] = Content.Load<SoundEffect>("sound/playershoot4");
+            PlayerShootSFX[1] = Content.Load<SoundEffect>("sound/playershoot5");
             PlayerAltSFX[0] = Content.Load<SoundEffect>("sound/AltChargeUp");
             PlayerAltSFX[1] = Content.Load<SoundEffect>("sound/AltFire");
             for (int i = 0; i < 2; i++)
@@ -178,7 +178,6 @@ namespace _3042
                 if (isAltFire)
                 SecondaryFireShot = true;
 
-
             for (int i = 0; i < BulletList.Count; i++)
             {
                 BulletList[i].Update();
@@ -190,8 +189,7 @@ namespace _3042
             for (int i = 0; i < 2; i++)
             {
                 PlayerShootSFXIns[i] = PlayerShootSFX[i].CreateInstance();
-                PlayerShootSFXIns[i].Volume = 0.6f;
-                PlayerShootSFXIns[i].Pitch = -1.5f;
+                PlayerShootSFXIns[i].Volume = 1f;
             }
 
 

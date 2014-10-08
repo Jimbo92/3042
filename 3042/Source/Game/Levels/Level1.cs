@@ -103,6 +103,8 @@ namespace _3042
                 BaseCode.BigEnemyWave(2, 45, Enemy.EEnemyType.Warp_CurvUpLeft, ScreenSize.X - 100, 600);
                 BaseCode.BigEnemyWave(3, 50, Enemy.EEnemyType.Warp_CurvUpRight, 50, 550);
             }
+            if (GameTimePast >= 90)
+                BaseCode.BossAi.isAlive = true;
 
         }
 
@@ -116,7 +118,7 @@ namespace _3042
             if (GameTimePast >= 20 && GameTimePast <= 20.5)
             {
                 WarningSFXIns.Play();
-
+            
                 AsteroidWarningTimer++;
                 if (AsteroidWarningTimer >= 3)
                 {
@@ -124,7 +126,22 @@ namespace _3042
                         new Vector2(ScreenSize.X / 2, ScreenSize.Y / 3),
                         .5f,
                         Color.White);
-
+            
+                    AsteroidWarningTimer = 0;
+                }
+            }
+            if (GameTimePast >= 88 && GameTimePast <= 88.5)
+            {
+                WarningSFXIns.Play();
+            
+                AsteroidWarningTimer++;
+                if (AsteroidWarningTimer >= 3)
+                {
+                    AsteroidWarning.Draw(sB, "INCOMING ENEMY MOTHERSHIP!",
+                        new Vector2(ScreenSize.X / 2, ScreenSize.Y / 3),
+                        .5f,
+                        Color.White);
+            
                     AsteroidWarningTimer = 0;
                 }
             }

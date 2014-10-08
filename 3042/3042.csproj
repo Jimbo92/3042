@@ -45,6 +45,7 @@
     <Compile Include="Source\Engine\GameMode.cs" />
     <Compile Include="Source\Engine\GUI.cs" />
     <Compile Include="Source\Engine\Input.cs" />
+    <Compile Include="Source\Game\Enemies\Boss.cs" />
     <Compile Include="Source\Game\Items\BasicItem.cs" />
     <Compile Include="Source\Game\Background\Background.cs" />
     <Compile Include="Source\Game\Bullet.cs" />
@@ -83,6 +84,9 @@
     <Content Include="Content\Graphics\AltBar.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Graphics\Asteroid2SS.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Graphics\AsteroidSS.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -105,6 +109,18 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Graphics\BarBackground.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Graphics\Boss.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Graphics\BossMainCannonSS.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Graphics\BossTurret1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Graphics\BossTurret2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Graphics\BulletExplosion4SS.png">
@@ -233,16 +249,19 @@
     <Content Include="Content\Sound\Explosion.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Sound\LifePickUp.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Sound\MenuSelectionClick.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Sound\MenuSelectionRollover.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Sound\PlayerShoot2.wav">
+    <Content Include="Content\Sound\PlayerShoot4.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Sound\PlayerShoot3.wav">
+    <Content Include="Content\Sound\PlayerShoot5.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Sound\Warning.wav">

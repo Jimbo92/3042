@@ -119,15 +119,15 @@ namespace _3042
         public void Draw(SpriteBatch sB)
         {
             //Score
-            ScoreFont.Draw(sB, "Score " + Score.ToString(), new Vector2(ScreenSize.X / 2, 25), 0.5f, Color.White);
+            ScoreFont.Draw(sB, "Score " + Score.ToString(), new Vector2(ScreenSize.X / 2, ScreenSize.Y - 25), 0.5f, Color.White);
             //BarBackgrounds
             BarBackground[0].Draw(sB, new Vector2(40 - 30 / 2, ScreenSize.Y - 15 - 100 / 2));
             BarBackground[1].Draw(sB, new Vector2(ScreenSize.X - 9 - 30 / 2, ScreenSize.Y - 15 - 100 / 2));
             //Health Bar
-            HealthBar.Draw(sB, new Vector2(39, ScreenSize.Y - 5), new Vector2(0, 0), MathHelper.ToRadians(180));
-            HealthFont.Draw(sB, "HP", new Vector2(25, ScreenSize.Y - 20), 0.3f, Color.White);
+            HealthBar.Draw(sB, new Vector2(40, ScreenSize.Y - 15), new Vector2(0, 0), MathHelper.ToRadians(180));
+            HealthFont.Draw(sB, "HP", new Vector2(25, ScreenSize.Y - 30), 0.3f, Color.White);
             //Alt Bar
-            AltBar.Draw(sB, new Vector2(ScreenSize.X - 10, ScreenSize.Y - 5), new Vector2(0, 0), MathHelper.ToRadians(180));
+            AltBar.Draw(sB, new Vector2(ScreenSize.X - 9, ScreenSize.Y - 15), new Vector2(0, 0), MathHelper.ToRadians(180));
             if (AltBarAmount >= 100)
             {
                 AltReadyTimer[0]++;
@@ -137,7 +137,7 @@ namespace _3042
                     AltReadyTimer[1]++;
                     if (AltReadyTimer[1] >= 3)
                     {
-                        AltReady.Draw(sB, "R\nE\nA\nD\nY", new Vector2(ScreenSize.X - 25, ScreenSize.Y - 55), 0.3f, Color.DarkBlue);
+                        AltReady.Draw(sB, "R\nE\nA\nD\nY", new Vector2(ScreenSize.X - 25, ScreenSize.Y - 65), 0.3f, Color.DarkBlue);
                         AltReadyTimer[1] = 0;
                     }
                 }
@@ -151,11 +151,11 @@ namespace _3042
 
             //Lives
             if (PlayerLives >= 1)
-            _Lives[0].Draw(sB, new Vector2(50, ScreenSize.Y - 40));
+            _Lives[0].Draw(sB, new Vector2(60, ScreenSize.Y - 40));
             if (PlayerLives >= 2)
-            _Lives[1].Draw(sB, new Vector2(50, ScreenSize.Y - 70));
+            _Lives[1].Draw(sB, new Vector2(60, ScreenSize.Y - 70));
             if (PlayerLives >= 3)
-            _Lives[2].Draw(sB, new Vector2(50, ScreenSize.Y - 100));
+            _Lives[2].Draw(sB, new Vector2(60, ScreenSize.Y - 100));
         }
 
 

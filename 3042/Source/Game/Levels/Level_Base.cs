@@ -24,6 +24,7 @@ namespace _3042
         public List<BasicItem> WepUpList = new List<BasicItem>();
         public List<BasicItem> OneUpList = new List<BasicItem>();
         public GUI gui;
+        public Boss BossAi;
 
         private int[] SpawnTimer = new int[10];
         private int RandItemDropNum;
@@ -42,6 +43,8 @@ namespace _3042
             player = new Player(getContent, getScreenSize);
 
             _BackGround = new Background(getContent, getScreenSize);
+
+            BossAi = new Boss(getContent);
         }
 
         public void Update(GameTime getGameTime, Rectangle getScreenSize)
@@ -68,17 +71,20 @@ namespace _3042
             CollisionDetection();
 
             ItemNextDropTimer++;
+
+            BossAi.Update(gui, player, ScreenSize);
+
         }
 
         public void WeaponUpgradeItem(Vector2 getPosition)
         {
-            BasicItem WepUp = new BasicItem(Content, "graphics/wepupss", 48, 32, 1, 6);
+            BasicItem WepUp = new BasicItem(Content, "graphics/wepupss", "sound/wepup", 48, 28, 1, 6);
             WepUp.Position = getPosition;
             WepUpList.Add(WepUp);
         }
         public void LifeItem(Vector2 getPosition)
         {
-            BasicItem OneUp = new BasicItem(Content, "graphics/oneupss", 48, 32, 1, 6);
+            BasicItem OneUp = new BasicItem(Content, "graphics/oneupss", "sound/lifepickup", 50, 28, 1, 6);
             OneUp.Position = getPosition;
             OneUpList.Add(OneUp);
         }
@@ -198,7 +204,7 @@ namespace _3042
 
                 if (CheckCollision.Collision(player.SecondaryFireRect, enemy.CollisionBox))
                 {
-                    enemy.Health = 0;
+                    enemy.Health -= 100;
                 }
                 foreach (Bullet bullet in enemy.BulletList)
                 {
@@ -241,6 +247,7 @@ namespace _3042
                 if (CheckCollision.Collision(player.CollisionBox, OneUp.CollisionBox))
                 {
                     OneUp.isAlive = false;
+                    gui.PlayerHealth = 100;
                     if (gui.PlayerLives != 3)
                     {
                         gui.PlayerLives++;
@@ -271,6 +278,8 @@ namespace _3042
             {
                 enemy.Draw(sB);
             }
+
+            BossAi.Draw(sB);
 
             player.Draw(sB);
 

@@ -27,6 +27,10 @@ namespace _3042
         private bool IsUp;
         private bool IsLeft;
 
+        private SoundEffect CollectSFX;
+        private SoundEffectInstance CollectSFXIns;
+        private int CollectSFXTimer;
+
         private enum ESpriteType
         {
             BASIC,
@@ -34,7 +38,7 @@ namespace _3042
         }
         ESpriteType SpriteType = ESpriteType.BASIC;
 
-        public BasicItem(ContentManager getContent, string getTexture, int getWidth, int getHeight)
+        public BasicItem(ContentManager getContent, string getTexture, string getSound, int getWidth, int getHeight)
         {
             Sprite = new BasicSprite(getContent, getTexture, getWidth, getHeight);
             RandXDirNum = RandXDir.Next(2);
@@ -48,8 +52,10 @@ namespace _3042
                 IsLeft = false;
                 IsUp = false;
             }
+            CollectSFX = getContent.Load<SoundEffect>(getSound);
+            CollectSFXIns = CollectSFX.CreateInstance();
         }
-        public BasicItem(ContentManager getContent, string getTexture, int getWidth, int getHeight, int getRows, int getColumns)
+        public BasicItem(ContentManager getContent, string getTexture, string getSound, int getWidth, int getHeight, int getRows, int getColumns)
         {
             SpriteAnim = new AnimSprite(getContent, getTexture, getWidth, getHeight, getRows, getColumns);
             SpriteType = ESpriteType.ANIM;
@@ -64,6 +70,8 @@ namespace _3042
                 IsLeft = false;
                 IsUp = false;
             }
+            CollectSFX = getContent.Load<SoundEffect>(getSound);
+            CollectSFXIns = CollectSFX.CreateInstance();
         }
 
         public void Draw(SpriteBatch sB)
@@ -77,6 +85,17 @@ namespace _3042
             {
                 LifeTimer = 501;
                 isAlive = false;
+            }
+
+            if (!isAlive)
+            {
+                CollectSFXIns.Volume = 0.3f;
+
+                CollectSFXTimer++;
+                if (CollectSFXTimer <= 1)
+                    CollectSFXIns.Play();
+                else
+                    CollectSFXTimer = 2;
             }
 
             if (IsUp)

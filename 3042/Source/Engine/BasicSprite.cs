@@ -29,33 +29,33 @@ namespace _3042
 
         public void Draw(SpriteBatch sB, Vector2 getPosition)
         {
-            _destinationRectangle = new Rectangle((int)getPosition.X, (int)getPosition.Y, Width, Height);
+                _destinationRectangle = new Rectangle((int)getPosition.X, (int)getPosition.Y, Width, Height);
 
             sB.Draw(Texture,
                 _destinationRectangle,
                 null,
                 Color.White,
                 0,
-                new Vector2(_destinationRectangle.Width / 2, _destinationRectangle.Height / 2),
+                new Vector2(Texture.Width / 2, Texture.Height / 2),
                 SpriteEffects.None,
-                0);       
+                0);
         }
         public void Draw(SpriteBatch sB, Vector2 getPosition, float getRotation)
         {
-            _destinationRectangle = new Rectangle((int)getPosition.X, (int)getPosition.Y, Width, Height);
+                _destinationRectangle = new Rectangle((int)getPosition.X, (int)getPosition.Y, Width, Height);
 
             sB.Draw(Texture,
                 _destinationRectangle,
                 null,
                 Color.White,
                 getRotation,
-                new Vector2(_destinationRectangle.Width / 2, _destinationRectangle.Height / 2),
+                new Vector2(Texture.Width / 2, Texture.Height / 2),
                 SpriteEffects.None,
                 0);
         }
         public void Draw(SpriteBatch sB, Vector2 getPosition, Vector2 getOrigin, float getRotation)
         {
-            _destinationRectangle = new Rectangle((int)getPosition.X, (int)getPosition.Y, Width, Height);
+                _destinationRectangle = new Rectangle((int)getPosition.X, (int)getPosition.Y, Width, Height);
 
             sB.Draw(Texture,
                 _destinationRectangle,

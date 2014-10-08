@@ -22,6 +22,7 @@ namespace _3042
 
         public enum EEnemyType
         {
+            Turret,
             Asteroid,
             Warp_CurvLeft,
             Warp_CurvRight,
@@ -35,7 +36,9 @@ namespace _3042
         {
             Basic,
             DoubleBarrel,
-            BossWep
+            BossWepSide,
+            BossWepAlt,
+            BossWepMain,
         };
 
         public BasicSprite Sprite;
@@ -56,6 +59,7 @@ namespace _3042
         public bool HasWeapon = false;
         public int WeaponDamage;
         public Vector2 BulletDirection;
+        public float Rotation = 0;
 
         private bool isRemoved = false;
         private int ScoreTimer;
@@ -72,7 +76,7 @@ namespace _3042
         private SoundEffectInstance WarpInSFXIns;
         private Rectangle ScreenSize;
         private Player player;
-        private float Rotation = 0;
+
 
         //Timers
         private int[] MoveTimer = new int[3];
@@ -132,6 +136,7 @@ namespace _3042
 
             switch (EnemyType)
             {
+                case EEnemyType.Turret: Turret_Type(); break;
                 case EEnemyType.Asteroid: Asteroid_Type(); break;
                 case EEnemyType.Warp_CurvLeft: Warp_CurvLeft_Type(); break;
                 case EEnemyType.Warp_CurvRight: Warp_CurvRight_Type(); break;
@@ -141,9 +146,12 @@ namespace _3042
                 case EEnemyType.Warp_JumpRightLeftDown: Warp_JumpRightLeftDown_Type(); break;
             }
 
-            if (EnemyType == EEnemyType.Asteroid)
+            if (EnemyType == EEnemyType.Asteroid || EnemyType == EEnemyType.Turret)
             {
-                Position += Direction * Speed;
+                if (EnemyType == EEnemyType.Asteroid)
+                    Position += Direction * Speed;
+                if (EnemyType == EEnemyType.Turret)
+                    Rotation = (float)Math.Atan2((double)player.Position.X - (double)Position.X, (double)player.Position.Y - (double)Position.Y);
             }
             else
             {
@@ -167,7 +175,7 @@ namespace _3042
                     ScoreTimer = 2;
             }
 
-            if (Position.Y >= 800 || Position.Y <= -100 || Position.X >= 800 || Position.X <= -100 ||
+            if (Position.Y >= 800 || Position.Y <= -300 || Position.X >= 800 || Position.X <= -100 ||
                 GameMode.Mode == GameMode.EGameMode.GAMEOVER || GameMode.Mode == GameMode.EGameMode.MENU)
             {
                 isRemoved = true;
@@ -255,13 +263,105 @@ namespace _3042
                     else if (WeaponTimer[0] >= 150)
                         WeaponTimer[0] = 0;
                 }
-                else if (WeaponType == EWeaponType.BossWep)
+                else if (WeaponType == EWeaponType.BossWepSide)
                 {
+                    WeaponTimer[0]++;
+                    if (WeaponTimer[0] <= 100)
+                    {
+                        WeaponTimer[1]++;
+                        if (WeaponTimer[1] >= 25)
+                        {
+                            Bullet bullet = new Bullet(Content, Bullet.EBulletType.Enemy, "graphics/ebullet", 10, 20);
+                            bullet._spriteType = Bullet.ESpriteType.BASIC;
+                            bullet.FirePosition = new Vector2(Position.X, Position.Y + 10);
+                            bullet.Position = bullet.FirePosition;
+                            bullet.Direction = BulletDirection;
+                            bullet.Direction.Normalize();
+                            bullet.Speed = 8f;
+                            bullet.Damage = 10;
+                            bullet.Rotation = -(float)Math.Atan2((double)player.Position.X - (double)bullet.Position.X, (double)player.Position.Y - (double)bullet.Position.Y);
+                            BulletList.Add(bullet);
 
+                            WeaponTimer[1] = 0;
+                        }
+                    }
+                    else if (WeaponTimer[0] >= 300)
+                        WeaponTimer[0] = 0;
+                }
+                else if (WeaponType == EWeaponType.BossWepAlt)
+                {
+                    WeaponTimer[0]++;
+                    if (WeaponTimer[0] <= 100)
+                    {
+                        WeaponTimer[1]++;
+                        if (WeaponTimer[1] >= 10)
+                        {
+                            Bullet bullet = new Bullet(Content, Bullet.EBulletType.Enemy, "graphics/ebullet2", 48, 48, 1, 4);
+                            bullet._spriteType = Bullet.ESpriteType.ANIM;
+                            bullet.Delay = 0.3f;
+                            bullet.FirePosition = new Vector2(Position.X, Position.Y);
+                            bullet.Position = bullet.FirePosition;
+                            bullet.Direction = new Vector2(BulletDirection.X, BulletDirection.Y);
+                            bullet.Direction.Normalize();
+                            bullet.Speed = 4f;
+                            bullet.Damage = 20;
+                            BulletList.Add(bullet);
+
+                            Bullet bullet2 = new Bullet(Content, Bullet.EBulletType.Enemy, "graphics/ebullet2", 32, 32, 1, 4);
+                            bullet2._spriteType = Bullet.ESpriteType.ANIM;
+                            bullet2.Delay = 0.3f;
+                            bullet2.FirePosition = new Vector2(Position.X, Position.Y);
+                            bullet2.Position = bullet2.FirePosition;
+                            bullet2.Direction = new Vector2(BulletDirection.X - 50, BulletDirection.Y);
+                            bullet2.Direction.Normalize();
+                            bullet2.Speed = 4f;
+                            bullet2.Damage = 15;
+                            BulletList.Add(bullet2);
+
+                            Bullet bullet3 = new Bullet(Content, Bullet.EBulletType.Enemy, "graphics/ebullet2", 32, 32, 1, 4);
+                            bullet3._spriteType = Bullet.ESpriteType.ANIM;
+                            bullet3.Delay = 0.3f;
+                            bullet3.FirePosition = new Vector2(Position.X, Position.Y);
+                            bullet3.Position = bullet3.FirePosition;
+                            bullet3.Direction = new Vector2(BulletDirection.X + 50, BulletDirection.Y);
+                            bullet3.Direction.Normalize();
+                            bullet3.Speed = 4f;
+                            bullet3.Damage = 15;
+                            BulletList.Add(bullet3);
+
+                            WeaponTimer[1] = 0;
+                        }
+                    }
+                    else if (WeaponTimer[0] >= 150 && WeaponTimer[0] <= 250)
+                    {
+                        WeaponTimer[2]++;
+                        if (WeaponTimer[2] >= 25)
+                        {
+                            Bullet bullet = new Bullet(Content, Bullet.EBulletType.Enemy, "graphics/ebullet", 10, 20);
+                            bullet._spriteType = Bullet.ESpriteType.BASIC;
+                            bullet.FirePosition = new Vector2(Position.X, Position.Y + 10);
+                            bullet.Position = bullet.FirePosition;
+                            bullet.Direction = BulletDirection;
+                            bullet.Direction.Normalize();
+                            bullet.Speed = 8f;
+                            bullet.Damage = 10;
+                            bullet.Rotation = -(float)Math.Atan2((double)player.Position.X - (double)bullet.Position.X, (double)player.Position.Y - (double)bullet.Position.Y);
+                            BulletList.Add(bullet);
+
+                            WeaponTimer[2] = 0;
+                        }
+                    }
+                    else if (WeaponTimer[0] >= 300)
+                        WeaponTimer[0] = 0;
                 }
             }
         }
 
+        private void Turret_Type()
+        {
+            // Rotate to player code
+            Rotation = (float)Math.Atan2((double)player.Position.X - (double)Position.X, (double)player.Position.Y - (double)Position.Y);
+        }
         private void Asteroid_Type()
         {
             isWarpIn = false;
@@ -286,10 +386,6 @@ namespace _3042
                 MoveTimer[0] = 301;
                 GotoPos.X = ScreenSize.X * 2;
             }
-
-
-            // Rotate to player code
-            //Rotation = (float)Math.Atan2((double)player.Position.X - (double)Position.X, (double)player.Position.Y - (double)Position.Y);
         }
         private void Warp_CurvRight_Type()
         {
@@ -412,7 +508,7 @@ namespace _3042
         public void Draw(SpriteBatch sB)
         {
             foreach (Bullet bullet in BulletList)
-                    bullet.Draw(sB);
+                bullet.Draw(sB);
 
             if (isWarpIn)
             {
@@ -430,13 +526,13 @@ namespace _3042
                 {
                     case ESpriteType.BASIC:
                         {
-                            Sprite.Draw(sB, Position, -Rotation);
+                            Sprite.Draw(sB, Position, Rotation);
                             CollisionBox = new Rectangle((int)Position.X - Sprite.Width / 2, (int)Position.Y - Sprite.Height / 2, Sprite.Width, Sprite.Height);
                         }; break;
 
                     case ESpriteType.ANIM:
                         {
-                            SpriteAnim.Draw(sB, Position, -Rotation);
+                            SpriteAnim.Draw(sB, Position, Rotation);
                             CollisionBox = new Rectangle((int)Position.X - SpriteAnim.Width / 2, (int)Position.Y - SpriteAnim.Height / 2, SpriteAnim.Width, SpriteAnim.Height);
                         }; break;
                 }
@@ -466,7 +562,8 @@ namespace _3042
                         ExplosionAnim.Draw(sB, Position);
                         ShockWaveAnim.UpdateAnimation(0.5f);
                         ShockWaveAnim.Draw(sB, Position);
-                        DisplayScore.Draw(sB, Score.ToString(), Position, .5f, Color.White);
+                        if (Score != 0)
+                            DisplayScore.Draw(sB, Score.ToString(), Position, .5f, Color.White);
                     }
                 }
 
