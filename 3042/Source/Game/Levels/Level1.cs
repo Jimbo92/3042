@@ -113,7 +113,7 @@ namespace _3042
             BaseCode.Draw(sB);
             //Code Bellow this
 
-            DebugGameTime.Draw(sB, "Game Time " + GameTimePast.ToString(), new Vector2(100, 50), 0.3f, Color.Red);
+            //DebugGameTime.Draw(sB, "Game Time " + GameTimePast.ToString(), new Vector2(100, 50), 0.3f, Color.Red);
 
             if (GameTimePast >= 20 && GameTimePast <= 20.5)
             {
