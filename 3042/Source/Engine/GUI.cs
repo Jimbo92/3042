@@ -102,6 +102,9 @@ namespace _3042
 
             if (PlayerHealth <= 0)
             {
+                if (PlayerLives <= 0)
+                    GameMode.Mode = GameMode.EGameMode.GAMEOVER;
+
                 player.isReset = true;
                 player.ImmuneTimer = 0;
                 player._weaponType = Player.EWeaponType.BASIC;
@@ -112,8 +115,6 @@ namespace _3042
             if (PlayerLives >= 4)
                 PlayerLives = 3;
 
-            if (PlayerLives <= 0)
-                GameMode.Mode = GameMode.EGameMode.GAMEOVER;
         }
 
         public void Draw(SpriteBatch sB)

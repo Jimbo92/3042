@@ -122,12 +122,17 @@ namespace _3042
             isAlive = false;
             foreach (Enemy turret in Turret)
             {
+                turret.Health = turret.MaxHealth;
+                turret.isAlive = true;
+                turret.WeaponType = Enemy.EWeaponType.BossWepSide;
+
                 foreach (Bullet bullet in turret.BulletList)
                 {
                     bullet.isRemoved = true;
                     bullet.isAlive = false;
                 }
             }
+            MainCannonCollisionBox = Rectangle.Empty;
             MainCannonChargeUp.Width = 128;
             MainCannonChargeUp.Height = 128;
             MainCannonTimer = 0;
